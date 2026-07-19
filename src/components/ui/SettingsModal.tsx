@@ -315,7 +315,7 @@ function CustomThemeEditor() {
 
 // ─── Appearance Tab ──────────────────────────────────────────────────────
 function AppearanceTab() {
-  const { theme, fontFamily, customTheme, setTheme, setFontFamily } = useSettingsStore();
+  const { theme, fontFamily, customTheme, setTheme, setFontFamily, language, setLanguage } = useSettingsStore();
   const [showCustomEditor, setShowCustomEditor] = useState(false);
   const themeKeys: Theme[] = ["dark", "midnight", "ocean", "forest", "midnight-carbon", "ember-studio", "forest-console", "slate-noir", "rose-cut"];
   const fontKeys: FontFamily[] = ["inter", "montserrat", "geist", "outfit", "roboto", "space-grotesk", "system", "mono"];
@@ -361,6 +361,26 @@ function AppearanceTab() {
             );
           })}
         </div>
+      </section>
+
+      {/* Language */}
+      <section>
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">App language</h3>
+        <select
+          value={language}
+          onChange={(event) => {
+            const next = event.target.value as SupportedLanguage;
+            setLanguage(next);
+            changeLanguage(next);
+          }}
+          className="w-full rounded-lg border border-white/6 bg-surface-raised px-3 py-2 text-[12px] text-text-primary focus:outline-none focus:border-accent/40"
+        >
+          {LANGUAGE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label[language] ?? option.label.en}
+            </option>
+          ))}
+        </select>
       </section>
     </div>
   );
@@ -706,8 +726,6 @@ function AboutTab() {
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const { t } = useTranslation("settings");
   const [activeTab, setActiveTab] = useState<Tab>("appearance");
-  const language = useSettingsStore((state) => state.language);
-  const setLanguage = useSettingsStore((state) => state.setLanguage);
 
   const visibleTabs = TABS.filter((tab) => {
     if (platform.isCapacitor() && tab.id === "shortcuts") return false;
@@ -746,27 +764,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 </p>
               </div>
             ) : (
-              <>
-                <WhisperSettings />
-                <div className="mt-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-2">App language</p>
-                <select
-                  value={language}
-                  onChange={(event) => {
-                    const next = event.target.value as SupportedLanguage;
-                    setLanguage(next);
-                    changeLanguage(next);
-                  }}
-                  className="w-full rounded-lg border border-white/6 bg-surface-raised px-3 py-2 text-[12px] text-text-primary focus:outline-none focus:border-accent/40"
-                >
-                  {LANGUAGE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label[language] ?? option.label.en}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              </>
+              <WhisperSettings />
             )
           )}
           {activeTab === "cache" && <CacheSettings />}
