@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Type, Palette, AlignLeft, AlignCenter, AlignRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Save, Trash2, PaintBucket, Layers, Layout } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { normalizeFontFamily } from "@/core/evaluation/evaluator";
@@ -94,6 +95,7 @@ interface TextStyleSectionProps {
 }
 
 export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, presets, newPresetName, setNewPresetName, handleUpdate: originalHandleUpdate, handleUpdateMultiple: originalHandleUpdateMultiple, handleApplyPreset, savePreset, deletePreset }) => {
+  const { t } = useTranslation("editor");
   const [applyToAll, setApplyToAll] = React.useState(false);
   const [effectSearchQuery, setEffectSearchQuery] = React.useState("");
   const [templateSearchQuery, setTemplateSearchQuery] = React.useState("");
@@ -369,7 +371,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             isModified={false} // Will display detach tips if user changes style properties
           />
           <div>
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1.5 select-none">Text Content</label>
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1.5 select-none">{t("textContent")}</label>
             <textarea value={textClip.text || ""} onChange={(e) => handleUpdate("text", e.target.value)} rows={3} placeholder="CLYPRA" className="w-full bg-surface-raised border border-border/60 rounded-lg p-2.5 text-xs text-text-primary outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 resize-none selectable transition-colors" />
           </div>
         </div>
@@ -377,14 +379,14 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
 
       {mode === "plain" && (
         <div>
-          <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1.5 select-none">Text Content</label>
+          <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1.5 select-none">{t("textContent")}</label>
           <textarea value={textClip.text || ""} onChange={(e) => handleUpdate("text", e.target.value)} rows={3} placeholder="CLYPRA" className="w-full bg-surface-raised border border-border/60 rounded-lg p-2.5 text-xs text-text-primary outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 resize-none selectable transition-colors" />
         </div>
       )}
 
       {/* Section B: Style Presets (Plain & Effect mode only) */}
       {mode !== "template" && (
-        <PropertySection title="Style Presets" icon={<Layers className="w-3.5 h-3.5" />} defaultCollapsed>
+        <PropertySection title={t("stylePresets")} icon={<Layers className="w-3.5 h-3.5" />} defaultCollapsed>
           <div className="space-y-3">
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
               {presets.map((preset) => (
@@ -408,7 +410,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             </div>
 
             <div className="flex items-center gap-2 pt-2 border-t border-border/30">
-              <input type="text" value={newPresetName} onChange={(e) => setNewPresetName(e.target.value)} placeholder="Custom style name..." className="flex-1 min-w-0 bg-surface-raised border border-border/60 rounded-md px-2 py-1 text-xs text-text-primary outline-none focus:border-accent selectable" />
+              <input type="text" value={newPresetName} onChange={(e) => setNewPresetName(e.target.value)} placeholder={t("customStyleName")} className="flex-1 min-w-0 bg-surface-raised border border-border/60 rounded-md px-2 py-1 text-xs text-text-primary outline-none focus:border-accent selectable" />
               <Button
                 size="sm"
                 variant="secondary"
@@ -433,7 +435,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                 }}
               >
                 <Save className="w-3.5 h-3.5" />
-                Save
+                {t("save")}
               </Button>
             </div>
           </div>
@@ -442,22 +444,22 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
 
       {/* Section C: Typography (Plain & Effect mode only) */}
       {mode !== "template" && (
-        <PropertySection title="Typography" icon={<Type className="w-3.5 h-3.5" />}>
+        <PropertySection title={t("typography")} icon={<Type className="w-3.5 h-3.5" />}>
           <div className="space-y-3">
-            {mode === "effect" && <div className="p-2 bg-amber-500/10 border border-amber-500/25 rounded text-[10px] text-amber-400 select-none">Note: Modifying typography will detach from the effect preset.</div>}
+            {mode === "effect" && <div className="p-2 bg-amber-500/10 border border-amber-500/25 rounded text-[10px] text-amber-400 select-none">{t("modifyTypographyDetach")}</div>}
 
             {/* Font Family */}
             <div>
-              <label className="text-[10px] font-medium text-text-muted block mb-1 select-none">Font Family</label>
+              <label className="text-[10px] font-medium text-text-muted block mb-1 select-none">{t("fontFamily")}</label>
               <select value={normalizeFontFamily(textClip.fontFamily || effectFont?.family || "Inter Variable")} onChange={(e) => handleCustomStyleUpdate("fontFamily", e.target.value)} className="w-full bg-surface-raised border border-border/60 rounded-md px-2.5 py-1.5 text-xs text-text-primary outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_8px_center] pr-7">
-                <optgroup label="System Fonts">
+                <optgroup label={t("systemFonts")}>
                   {SYSTEM_FONTS.map((f) => (
                     <option key={f.value} value={f.value}>
                       {f.label}
                     </option>
                   ))}
                 </optgroup>
-                <optgroup label="Google Web Fonts">
+                <optgroup label={t("googleWebFonts")}>
                   {GOOGLE_FONTS.map((f) => (
                     <option key={f.value} value={f.value}>
                       {f.label}
@@ -468,12 +470,12 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             </div>
 
             {/* Font Size */}
-            <PropertySlider label="Font Size" value={textClip.fontSize || 48} min={10} max={1000} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("fontSize", v)} />
+            <PropertySlider label={t("fontSize")} value={textClip.fontSize || 48} min={10} max={1000} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("fontSize", v)} />
 
             {/* Font Weight */}
             <div>
               <div className="flex justify-between items-center text-[10px] text-text-muted mb-1 select-none">
-                <span>Font Weight</span>
+                <span>{t("fontWeight")}</span>
                 <span className="text-text-primary font-medium">
                   {weightLabel} ({currentWeight})
                 </span>
@@ -495,14 +497,14 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             {/* Font Style + Alignment */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-[9px] text-text-muted block select-none">Style</label>
+                <label className="text-[9px] text-text-muted block select-none">{t("style")}</label>
                 <button onClick={() => handleCustomStyleUpdate("fontStyle", effectiveFontStyle === "italic" ? "normal" : "italic")} className={`w-full py-1.5 rounded-md text-xs italic font-medium transition-all cursor-pointer border ${effectiveFontStyle === "italic" ? "bg-accent/15 text-accent border-accent/30" : "bg-surface-raised text-text-muted border-border/60 hover:text-text-primary hover:bg-white/[0.06]"}`}>
-                  Italic
+                  {t("italic")}
                 </button>
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] text-text-muted block select-none">Horizontal Align</label>
+                <label className="text-[9px] text-text-muted block select-none">{t("horizontalAlign")}</label>
                 <div className="flex gap-0.5 bg-surface-raised border border-border/60 p-0.5 rounded-md">
                   {(
                     [
@@ -522,7 +524,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             {/* Vertical align + letter spacing */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-[9px] text-text-muted block select-none">Vertical Align</label>
+                <label className="text-[9px] text-text-muted block select-none">{t("verticalAlign")}</label>
                 <div className="flex gap-0.5 bg-surface-raised border border-border/60 p-0.5 rounded-md">
                   {(
                     [
@@ -539,27 +541,27 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
               </div>
 
               <div className="space-y-1">
-                <label className="text-[9px] text-text-muted block select-none">Letter Spacing</label>
+                <label className="text-[9px] text-text-muted block select-none">{t("letterSpacing")}</label>
                 <input type="number" value={effectiveLetterSpacing} onChange={(e) => handleCustomStyleUpdate("letterSpacing", Number(e.target.value))} className="w-full bg-surface-raised border border-border/60 rounded-md py-1.5 px-2 text-center text-xs text-text-primary outline-none focus:border-accent tabular-nums selectable" />
               </div>
             </div>
 
             {/* Line Height */}
-            <PropertySlider label="Line Height" value={effectiveLineHeight} min={0.5} max={3.0} step={0.1} onChange={(v) => handleCustomStyleUpdate("lineHeight", v)} />
+            <PropertySlider label={t("lineHeight")} value={effectiveLineHeight} min={0.5} max={3.0} step={0.1} onChange={(v) => handleCustomStyleUpdate("lineHeight", v)} />
           </div>
         </PropertySection>
       )}
 
       {/* Section D: Colors & Effects (Plain & Effect mode only) */}
       {mode !== "template" && (
-        <PropertySection title="Colors & Effects" icon={<Palette className="w-3.5 h-3.5" />}>
+        <PropertySection title={t("colorsAndEffects")} icon={<Palette className="w-3.5 h-3.5" />}>
           <div className="space-y-3.5">
-            {mode === "effect" && <div className="p-2 bg-amber-500/10 border border-amber-500/25 rounded text-[10px] text-amber-400 select-none">Note: Changing colors will detach from the effect preset.</div>}
+            {mode === "effect" && <div className="p-2 bg-amber-500/10 border border-amber-500/25 rounded text-[10px] text-amber-400 select-none">{t("changingColorsDetach")}</div>}
 
             {/* Text Color */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-medium text-text-primary select-none">Text Color</span>
+                <span className="text-[10px] font-medium text-text-primary select-none">{t("textColor")}</span>
                 <div className="flex items-center gap-2">
                   <select
                     value={isPresetGradient ? textClip.color : isGradient ? "custom_gradient" : "solid"}
@@ -574,11 +576,11 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                     }}
                     className="bg-surface-raised border border-border/60 rounded text-[10px] py-1 px-1.5 text-text-muted outline-none cursor-pointer"
                   >
-                    <option value="solid">Solid Color</option>
-                    <option value="#ffe066, #b38600">Gold Gradient</option>
-                    <option value="#ff3e00, #ff0077, #aa00ff">Sunset Gradient</option>
-                    <option value="#ff007f, #aa00ff, #00c8ff, #00ff66">Rainbow Gradient</option>
-                    <option value="custom_gradient">Custom Gradient</option>
+                    <option value="solid">{t("solidColor")}</option>
+                    <option value="#ffe066, #b38600">{t("goldGradient")}</option>
+                    <option value="#ff3e00, #ff0077, #aa00ff">{t("sunsetGradient")}</option>
+                    <option value="#ff007f, #aa00ff, #00c8ff, #00ff66">{t("rainbowGradient")}</option>
+                    <option value="custom_gradient">{t("customGradient")}</option>
                   </select>
                   <input type="color" value={isGradient ? "#ffffff" : textClip.color || "#ffffff"} onChange={(e) => handleCustomStyleUpdate("color", e.target.value)} className="w-7 h-7 bg-transparent border-0 cursor-pointer rounded overflow-hidden" />
                 </div>
@@ -588,10 +590,10 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
               {isGradient && !isPresetGradient && (
                 <div className="space-y-2 p-2.5 bg-zinc-950/40 border border-zinc-800 rounded-lg select-none">
                   <div className="flex justify-between items-center text-[10px] text-zinc-400 mb-1">
-                    <span>Gradient Stops</span>
+                    <span>{t("gradientStops")}</span>
                     {getStops().length < 4 && (
                       <button onClick={handleAddStop} className="text-[10px] text-accent hover:underline cursor-pointer">
-                        + Add Stop
+                        {t("addStop")}
                       </button>
                     )}
                   </div>
@@ -625,7 +627,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             {/* Stroke / Outline */}
             <div className="border-t border-border/30 pt-3 space-y-2">
               <div className="flex items-center justify-between select-none">
-                <span className="text-[10px] font-medium text-text-primary">Outline / Stroke</span>
+                <span className="text-[10px] font-medium text-text-primary">{t("outlineStroke")}</span>
                 <button
                   onClick={() => {
                     if (textClip.stroke) {
@@ -636,14 +638,14 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                   }}
                   className={`px-2 py-0.5 text-[9px] font-medium rounded-full transition-all cursor-pointer ${textClip.stroke ? "bg-accent/15 text-accent border border-accent/30" : "bg-surface-raised text-text-muted border border-border/60 hover:text-text-primary"}`}
                 >
-                  {textClip.stroke ? "ON" : "OFF"}
+                  {textClip.stroke ? t("on") : t("off")}
                 </button>
               </div>
 
               {textClip.stroke && (
                 <div className="space-y-2.5 p-2.5 bg-surface-raised/30 border border-border/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-text-muted">Color</span>
+                    <span className="text-[10px] text-text-muted">{t("color")}</span>
                     <div className="flex items-center gap-1.5">
                       {["#000000", "#ffffff", "#ff3b30", "#ffcc00"].map((c, idx) => (
                         <button key={idx} onClick={() => handleCustomStyleUpdate("stroke", { ...textClip.stroke, color: c })} className={`w-4 h-4 rounded-full border cursor-pointer transition-all ${textClip.stroke?.color === c ? "ring-2 ring-accent/40 border-accent" : "border-border/60"}`} style={{ backgroundColor: c }} />
@@ -651,7 +653,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                       <input type="color" value={textClip.stroke.color} onChange={(e) => handleCustomStyleUpdate("stroke", { ...textClip.stroke, color: e.target.value })} className="w-5 h-5 bg-transparent border-0 cursor-pointer" />
                     </div>
                   </div>
-                  <PropertySlider label="Thickness" value={textClip.stroke.width} min={1} max={15} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("stroke", { ...textClip.stroke, width: v })} compact />
+                  <PropertySlider label={t("thickness")} value={textClip.stroke.width} min={1} max={15} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("stroke", { ...textClip.stroke, width: v })} compact />
                 </div>
               )}
             </div>
@@ -659,7 +661,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             {/* Shadow / Outer Glow */}
             <div className="border-t border-border/30 pt-3 space-y-2">
               <div className="flex items-center justify-between select-none">
-                <span className="text-[10px] font-medium text-text-primary">Outer Glow / Shadow</span>
+                <span className="text-[10px] font-medium text-text-primary">{t("outerGlowShadow")}</span>
                 <button
                   onClick={() => {
                     if (textClip.shadow) {
@@ -670,14 +672,14 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                   }}
                   className={`px-2 py-0.5 text-[9px] font-medium rounded-full transition-all cursor-pointer ${textClip.shadow ? "bg-accent/15 text-accent border border-accent/30" : "bg-surface-raised text-text-muted border border-border/60 hover:text-text-primary"}`}
                 >
-                  {textClip.shadow ? "ON" : "OFF"}
+                  {textClip.shadow ? t("on") : t("off")}
                 </button>
               </div>
 
               {textClip.shadow && (
                 <div className="space-y-2.5 p-2.5 bg-surface-raised/30 border border-border/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-text-muted">Color</span>
+                    <span className="text-[10px] text-text-muted">{t("color")}</span>
                     <div className="flex items-center gap-1.5">
                       {["#ff0000", "#ff007f", "#00f0ff", "#ffe066"].map((c, idx) => (
                         <button key={idx} onClick={() => handleCustomStyleUpdate("shadow", { ...textClip.shadow, color: c })} className={`w-4 h-4 rounded-full border cursor-pointer transition-all ${textClip.shadow?.color === c ? "ring-2 ring-accent/40 border-accent" : "border-border/60"}`} style={{ backgroundColor: c }} />
@@ -685,14 +687,14 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                       <input type="color" value={textClip.shadow.color} onChange={(e) => handleCustomStyleUpdate("shadow", { ...textClip.shadow, color: e.target.value })} className="w-5 h-5 bg-transparent border-0 cursor-pointer" />
                     </div>
                   </div>
-                  <PropertySlider label="Blur Radius" value={textClip.shadow.blur} min={1} max={30} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("shadow", { ...textClip.shadow, blur: v })} compact />
+                  <PropertySlider label={t("blurRadius")} value={textClip.shadow.blur} min={1} max={30} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("shadow", { ...textClip.shadow, blur: v })} compact />
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="text-[9px] text-text-muted block mb-0.5 select-none">Offset X</label>
+                      <label className="text-[9px] text-text-muted block mb-0.5 select-none">{t("offsetX")}</label>
                       <input type="number" value={textClip.shadow.offsetX} onChange={(e) => handleCustomStyleUpdate("shadow", { ...textClip.shadow, offsetX: Number(e.target.value) })} className="w-full bg-surface-raised border border-border/60 text-center rounded-md py-0.5 text-xs text-text-primary outline-none focus:border-accent tabular-nums selectable" />
                     </div>
                     <div>
-                      <label className="text-[9px] text-text-muted block mb-0.5 select-none">Offset Y</label>
+                      <label className="text-[9px] text-text-muted block mb-0.5 select-none">{t("offsetY")}</label>
                       <input type="number" value={textClip.shadow.offsetY} onChange={(e) => handleCustomStyleUpdate("shadow", { ...textClip.shadow, offsetY: Number(e.target.value) })} className="w-full bg-surface-raised border border-border/60 text-center rounded-md py-0.5 text-xs text-text-primary outline-none focus:border-accent tabular-nums selectable" />
                     </div>
                   </div>
@@ -703,7 +705,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             {/* Background Box */}
             <div className="border-t border-border/30 pt-3 space-y-2">
               <div className="flex items-center justify-between select-none">
-                <span className="text-[10px] font-medium text-text-primary">Background Box</span>
+                <span className="text-[10px] font-medium text-text-primary">{t("backgroundBox")}</span>
                 <button
                   onClick={() => {
                     if (textClip.background) {
@@ -714,14 +716,14 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                   }}
                   className={`px-2 py-0.5 text-[9px] font-medium rounded-full transition-all cursor-pointer ${textClip.background ? "bg-accent/15 text-accent border border-accent/30" : "bg-surface-raised text-text-muted border border-border/60 hover:text-text-primary"}`}
                 >
-                  {textClip.background ? "ON" : "OFF"}
+                  {textClip.background ? t("on") : t("off")}
                 </button>
               </div>
 
               {textClip.background && (
                 <div className="space-y-2.5 p-2.5 bg-surface-raised/30 border border-border/30 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-text-muted">Box Color</span>
+                    <span className="text-[10px] text-text-muted">{t("boxColor")}</span>
                     <div className="flex items-center gap-1.5">
                       {["rgba(0,0,0,0.6)", "rgba(255,255,255,0.2)", "rgba(0,122,255,0.3)", "rgba(255,59,48,0.3)"].map((c, idx) => (
                         <button key={idx} onClick={() => handleCustomStyleUpdate("background", { ...textClip.background, color: c })} className={`w-4 h-4 rounded-full border cursor-pointer transition-all ${textClip.background?.color === c ? "ring-2 ring-accent/40 border-accent" : "border-border/60"}`} style={{ backgroundColor: c }} />
@@ -729,8 +731,8 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
                       <input type="color" value={textClip.background.color.startsWith("rgba") ? "#000000" : textClip.background.color} onChange={(e) => handleCustomStyleUpdate("background", { ...textClip.background, color: e.target.value })} className="w-5 h-5 bg-transparent border-0 cursor-pointer" />
                     </div>
                   </div>
-                  <PropertySlider label="Padding" value={textClip.background.padding} min={0} max={30} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("background", { ...textClip.background, padding: v })} compact />
-                  <PropertySlider label="Border Radius" value={textClip.background.borderRadius} min={0} max={25} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("background", { ...textClip.background, borderRadius: v })} compact />
+                  <PropertySlider label={t("padding")} value={textClip.background.padding} min={0} max={30} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("background", { ...textClip.background, padding: v })} compact />
+                  <PropertySlider label={t("borderRadius")} value={textClip.background.borderRadius} min={0} max={25} step={1} suffix="px" onChange={(v) => handleCustomStyleUpdate("background", { ...textClip.background, borderRadius: v })} compact />
                 </div>
               )}
             </div>
@@ -741,13 +743,13 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
       {/* Section E: Quick Presets (Plain & Effect mode) OR Template Gallery (Template mode) */}
       {mode !== "template" ? (
         <div id="quick-presets-section">
-          <PropertySection title="Preset Effects" icon={<PaintBucket className="w-3.5 h-3.5" />} defaultCollapsed={mode === "plain"}>
+          <PropertySection title={t("presetEffects")} icon={<PaintBucket className="w-3.5 h-3.5" />} defaultCollapsed={mode === "plain"}>
             <div className="space-y-3 select-none">
               {/* Search filter */}
-              <input type="text" placeholder="Search effects..." value={effectSearchQuery} onChange={(e) => setEffectSearchQuery(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded-md py-1 px-2 text-xs text-white outline-none focus:border-violet-500" />
+              <input type="text" placeholder={t("searchEffects")} value={effectSearchQuery} onChange={(e) => setEffectSearchQuery(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded-md py-1 px-2 text-xs text-white outline-none focus:border-violet-500" />
 
               {filteredEffects.length === 0 ? (
-                <p className="text-[10px] text-text-muted text-center py-2">No matching presets found.</p>
+                <p className="text-[10px] text-text-muted text-center py-2">{t("noMatchingPresets")}</p>
               ) : (
                 <div className="grid grid-cols-3 gap-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
                   {filteredEffects.map((effect) => (
@@ -770,7 +772,7 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
           </PropertySection>
         </div>
       ) : (
-        <PropertySection title="Template Gallery" icon={<PaintBucket className="w-3.5 h-3.5" />}>
+        <PropertySection title={t("templateGallery")} icon={<PaintBucket className="w-3.5 h-3.5" />}>
           <div className="space-y-3 select-none">
             {/* Category selection */}
             <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-none">
@@ -782,10 +784,10 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             </div>
 
             {/* Search filter */}
-            <input type="text" placeholder="Search templates..." value={templateSearchQuery} onChange={(e) => setTemplateSearchQuery(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded-md py-1 px-2 text-xs text-white outline-none focus:border-amber-500" />
+            <input type="text" placeholder={t("searchTemplates")} value={templateSearchQuery} onChange={(e) => setTemplateSearchQuery(e.target.value)} className="w-full bg-zinc-900 border border-zinc-800 rounded-md py-1 px-2 text-xs text-white outline-none focus:border-amber-500" />
 
             {filteredTemplates.length === 0 ? (
-              <p className="text-[10px] text-text-muted text-center py-2">No matching templates found.</p>
+              <p className="text-[10px] text-text-muted text-center py-2">{t("noMatchingTemplates")}</p>
             ) : (
               <div className="grid grid-cols-3 gap-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
                 {filteredTemplates.map((tpl) => {
@@ -807,11 +809,11 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
       {textClip.textRole === "caption" && (
         <div className="flex items-center justify-between p-2.5 bg-surface-raised/35 border border-border/30 rounded-lg select-none">
           <div className="flex flex-col">
-            <span className="text-xs font-semibold text-text-primary">Apply to all captions</span>
-            <span className="text-[9px] text-text-muted">Broadcast styles to all clips on this track</span>
+            <span className="text-xs font-semibold text-text-primary">{t("applyToAllCaptions")}</span>
+            <span className="text-[9px] text-text-muted">{t("broadcastStyles")}</span>
           </div>
           <button onClick={() => setApplyToAll(!applyToAll)} className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${applyToAll ? "bg-accent/15 text-accent border border-accent/30 hover:bg-accent/25" : "bg-surface-raised border border-border/60 text-text-muted hover:text-text-primary hover:bg-white/[0.04]"}`}>
-            {applyToAll ? "Active" : "Inactive"}
+            {applyToAll ? t("active") : t("inactive")}
           </button>
         </div>
       )}

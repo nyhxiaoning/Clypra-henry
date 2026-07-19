@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Music } from "lucide-react";
 
 interface AudioWaveformProps {
@@ -11,6 +12,7 @@ interface AudioWaveformProps {
 
 // Audio preview placeholder - blurred artwork background with centered artwork or music icon
 export const AudioWaveform: React.FC<AudioWaveformProps> = ({ isPlaying, coverImage, audioName, className = "" }) => {
+  const { t } = useTranslation("editor");
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
       {/* Full-screen blurred background */}
@@ -47,7 +49,7 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({ isPlaying, coverIm
         <div className="absolute top-2 right-2 z-20">
           <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-accent/20 backdrop-blur-sm ring-1 ring-accent/30  animate-pulse">
             <div className="w-2 h-2 rounded-full bg-accent" />
-            <span className="text-[10px] font-medium text-accent">Playing</span>
+            <span className="text-[10px] font-medium text-accent">{t("playing")}</span>
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Trash2, HardDrive, RefreshCw, AlertCircle, CheckCircle, Cloud, Database, Music2, Layers } from "lucide-react";
 import { useCacheManager } from "@/hooks/useCacheManager";
 import { TextEffectsApi } from "@/features/text-effects/api/textEffectsApi";
@@ -6,6 +7,7 @@ import { TextEffectsCacheManager } from "@/features/text-effects/cache/cacheMana
 import { useAudioLibraryStore } from "@/features/audio-library/store/audioLibraryStore";
 
 export const CacheSettings: React.FC = () => {
+  const { t } = useTranslation("settings");
   const { isClearing, cacheInfo, lastResult, clearAllCaches, clearAppCache, clearWebViewCache, clearGPUCache } = useCacheManager();
   const { getCacheStats, clearAllCache: clearAudioCache } = useAudioLibraryStore();
 
@@ -83,8 +85,8 @@ export const CacheSettings: React.FC = () => {
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-[13px] font-semibold uppercase tracking-wider text-text-muted mb-2">Cache Management</h3>
-        <p className="text-[11px] text-text-muted">Clear cached data to free up disk space or resolve performance issues.</p>
+        <h3 className="text-[13px] font-semibold uppercase tracking-wider text-text-muted mb-2">{t("cacheManagement")}</h3>
+        <p className="text-[11px] text-text-muted">{t("clearCachedDataToFreeUpSpace")}</p>
       </div>
 
       {/* Cache Info */}
@@ -92,29 +94,29 @@ export const CacheSettings: React.FC = () => {
         <div className="bg-surface-raised/30 border border-white/6 rounded-lg p-4 space-y-3">
           <div className="flex items-center gap-2 text-xs">
             <HardDrive className="w-4 h-4 text-accent" />
-            <span className="font-semibold text-text-primary">Cache Status</span>
+            <span className="font-semibold text-text-primary">{t("cacheStatus")}</span>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-[11px]">
             <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-              <div className="text-text-muted">localStorage Items</div>
+              <div className="text-text-muted">{t("localStorageItems")}</div>
               <div className="text-text-primary font-semibold mt-1">{cacheInfo.localStorage}</div>
             </div>
 
             <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-              <div className="text-text-muted">sessionStorage Items</div>
+              <div className="text-text-muted">{t("sessionStorageItems")}</div>
               <div className="text-text-primary font-semibold mt-1">{cacheInfo.sessionStorage}</div>
             </div>
 
             {cacheInfo.gpuCache && (
               <>
                 <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-                  <div className="text-text-muted">GPU Textures</div>
+                  <div className="text-text-muted">{t("gpuTextures")}</div>
                   <div className="text-text-primary font-semibold mt-1">{cacheInfo.gpuCache.textureCount || 0}</div>
                 </div>
 
                 <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-                  <div className="text-text-muted">GPU Memory</div>
+                  <div className="text-text-muted">{t("gpuMemory")}</div>
                   <div className="text-text-primary font-semibold mt-1">{cacheInfo.gpuCache.memoryMB || "0"} MB</div>
                 </div>
               </>
@@ -148,8 +150,8 @@ export const CacheSettings: React.FC = () => {
               <Trash2 className="w-5 h-5 text-accent" />
             </div>
             <div className="text-left">
-              <div className="font-medium text-text-primary text-xs">Clear All Caches</div>
-              <div className="text-[10px] text-text-muted">App cache, WebView, GPU, and IndexedDB</div>
+              <div className="font-medium text-text-primary text-xs">{t("clearAllCaches")}</div>
+              <div className="text-[10px] text-text-muted">{t("appCacheWebViewGpu")}</div>
             </div>
           </div>
           {isClearing && <RefreshCw className="w-5 h-5 text-accent animate-spin" />}
@@ -158,17 +160,17 @@ export const CacheSettings: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button onClick={() => clearAppCache()} disabled={isClearing} className="flex flex-col items-center gap-2 p-4 bg-surface-raised/20 hover:bg-surface-raised/40 border border-white/6 hover:border-accent/30 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             <HardDrive className="w-5 h-5 text-accent" />
-            <div className="text-[11px] font-medium text-text-primary">App Cache</div>
+            <div className="text-[11px] font-medium text-text-primary">{t("appCache")}</div>
           </button>
 
           <button onClick={() => clearWebViewCache()} disabled={isClearing} className="flex flex-col items-center gap-2 p-4 bg-surface-raised/20 hover:bg-surface-raised/40 border border-white/6 hover:border-accent/30 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             <RefreshCw className="w-5 h-5 text-accent" />
-            <div className="text-[11px] font-medium text-text-primary">WebView</div>
+            <div className="text-[11px] font-medium text-text-primary">{t("webView")}</div>
           </button>
 
           <button onClick={() => clearGPUCache()} disabled={isClearing} className="flex flex-col items-center gap-2 p-4 bg-surface-raised/20 hover:bg-surface-raised/40 border border-white/6 hover:border-accent/30 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             <Trash2 className="w-5 h-5 text-accent" />
-            <div className="text-[11px] font-medium text-text-primary">GPU Cache</div>
+            <div className="text-[11px] font-medium text-text-primary">{t("gpuCache")}</div>
           </button>
         </div>
       </div>
@@ -176,8 +178,8 @@ export const CacheSettings: React.FC = () => {
       {/* API Cache Management */}
       <div className="space-y-3 pt-4 border-t border-white/6">
         <div>
-          <h3 className="text-[13px] font-semibold uppercase tracking-wider text-text-muted mb-2">Text Effects Cache</h3>
-          <p className="text-[11px] text-text-muted">Manage cached text effects from local storage and API.</p>
+          <h3 className="text-[13px] font-semibold uppercase tracking-wider text-text-muted mb-2">{t("textEffectsCache")}</h3>
+          <p className="text-[11px] text-text-muted">{t("manageTextEffectsCache")}</p>
         </div>
 
         {/* Text Effects Cache Stats */}
@@ -185,22 +187,22 @@ export const CacheSettings: React.FC = () => {
           <div className="bg-surface-raised/30 border border-white/6 rounded-lg p-4 space-y-3">
             <div className="flex items-center gap-2 text-xs">
               <Layers className="w-4 h-4 text-accent" />
-              <span className="font-semibold text-text-primary">Cached Text Effects</span>
+              <span className="font-semibold text-text-primary">{t("cachedTextEffects")}</span>
             </div>
 
             <div className="grid grid-cols-3 gap-3 text-[11px]">
               <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-                <div className="text-text-muted">Memory</div>
+                <div className="text-text-muted">{t("memory")}</div>
                 <div className="text-text-primary font-semibold mt-1">{textEffectsCacheStats.zustand} effects</div>
               </div>
 
               <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-                <div className="text-text-muted">IndexedDB</div>
+                <div className="text-text-muted">{t("indexedDB")}</div>
                 <div className="text-text-primary font-semibold mt-1">{textEffectsCacheStats.indexedDB} effects</div>
               </div>
 
               <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-                <div className="text-text-muted">Disk Size</div>
+                <div className="text-text-muted">{t("diskSize")}</div>
                 <div className="text-text-primary font-semibold mt-1">{textEffectsCacheStats.totalMB.toFixed(2)} MB</div>
               </div>
             </div>
@@ -218,40 +220,40 @@ export const CacheSettings: React.FC = () => {
           <button onClick={handleClearLocalApiCache} disabled={isClearingApi} className="w-full flex items-center gap-3 p-4 bg-surface-raised/20 hover:bg-surface-raised/40 border border-white/6 hover:border-blue-500/30 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">{isClearingApi ? <RefreshCw className="w-5 h-5 text-blue-400 animate-spin" /> : <Database className="w-5 h-5 text-blue-400" />}</div>
             <div className="text-left flex-1">
-              <div className="font-medium text-text-primary text-xs">Clear Local Cache</div>
-              <div className="text-[10px] text-text-muted">Memory + IndexedDB</div>
+              <div className="font-medium text-text-primary text-xs">{t("clearLocalCache")}</div>
+              <div className="text-[10px] text-text-muted">{t("memoryIndexedDB")}</div>
             </div>
           </button>
         </div>
 
         <div className="flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
           <AlertCircle className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-blue-200/90">Local cache stores effects on your device for faster access.</p>
+          <p className="text-[11px] text-blue-200/90">{t("localCacheStoresEffects")}</p>
         </div>
       </div>
 
       {/* Audio Library Cache Management */}
       <div className="space-y-3 pt-4 border-t border-white/6">
         <div>
-          <h3 className="text-[13px] font-semibold uppercase tracking-wider text-text-muted mb-2">Audio Library Cache</h3>
-          <p className="text-[11px] text-text-muted">Manage downloaded audio files from the audio library.</p>
+          <h3 className="text-[13px] font-semibold uppercase tracking-wider text-text-muted mb-2">{t("audioLibraryCache")}</h3>
+          <p className="text-[11px] text-text-muted">{t("manageCachedAudioFiles")}</p>
         </div>
 
         {/* Audio Cache Stats */}
         <div className="bg-surface-raised/30 border border-white/6 rounded-lg p-4 space-y-3">
           <div className="flex items-center gap-2 text-xs">
             <Music2 className="w-4 h-4 text-accent" />
-            <span className="font-semibold text-text-primary">Cached Audio Files</span>
+            <span className="font-semibold text-text-primary">{t("cachedAudioFiles")}</span>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-[11px]">
             <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-              <div className="text-text-muted">Files</div>
+              <div className="text-text-muted">{t("files")}</div>
               <div className="text-text-primary font-semibold mt-1">{audioCacheStats.count}</div>
             </div>
 
             <div className="bg-surface-raised/50 rounded p-2 border border-white/5">
-              <div className="text-text-muted">Total Size</div>
+              <div className="text-text-muted">{t("totalSize")}</div>
               <div className="text-text-primary font-semibold mt-1">{(audioCacheStats.totalSize / (1024 * 1024)).toFixed(2)} MB</div>
             </div>
           </div>
@@ -263,23 +265,23 @@ export const CacheSettings: React.FC = () => {
               <RefreshCw className="w-5 h-5 text-accent" />
             </div>
             <div className="text-left flex-1">
-              <div className="font-medium text-text-primary text-xs">Refresh Stats</div>
-              <div className="text-[10px] text-text-muted">Update cache information</div>
+              <div className="font-medium text-text-primary text-xs">{t("refreshStats")}</div>
+              <div className="text-[10px] text-text-muted">{t("updateCacheInformation")}</div>
             </div>
           </button>
 
           <button onClick={handleClearAudioCache} disabled={isClearingAudio} className="flex items-center gap-3 p-4 bg-surface-raised/20 hover:bg-surface-raised/40 border border-white/6 hover:border-red-500/30 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">{isClearingAudio ? <RefreshCw className="w-5 h-5 text-red-400 animate-spin" /> : <Trash2 className="w-5 h-5 text-red-400" />}</div>
             <div className="text-left flex-1">
-              <div className="font-medium text-text-primary text-xs">Clear Audio Cache</div>
-              <div className="text-[10px] text-text-muted">Delete all downloaded files</div>
+              <div className="font-medium text-text-primary text-xs">{t("clearAudioCache")}</div>
+              <div className="text-[10px] text-text-muted">{t("deleteAllDownloadedFiles")}</div>
             </div>
           </button>
         </div>
 
         <div className="flex items-start gap-3 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
           <AlertCircle className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-orange-200/90">Clearing audio cache will remove all downloaded library files. You'll need to download them again when adding to timeline.</p>
+          <p className="text-[11px] text-orange-200/90">{t("clearingAudioCacheWarning")}</p>
         </div>
       </div>
 
@@ -287,11 +289,11 @@ export const CacheSettings: React.FC = () => {
       <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
         <AlertCircle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
         <div className="text-[11px] text-yellow-200/90">
-          <p className="font-semibold mb-1">Important Notes:</p>
+          <p className="font-semibold mb-1">{t("importantNotes")}</p>
           <ul className="space-y-1 list-disc list-inside">
-            <li>Clearing cache may require an application restart for full effect</li>
-            <li>WebView cache (Windows) may be locked by running processes</li>
-            <li>Your settings and preferences will be preserved</li>
+            <li>{t("clearingCacheMayRequireRestart")}</li>
+            <li>{t("webViewCacheMayBeLocked")}</li>
+            <li>{t("settingsAndPreferencesPreserved")}</li>
           </ul>
         </div>
       </div>

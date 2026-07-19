@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link2, Mic, Search, ZoomIn, ZoomOut, ArrowLeftRight, Waves, Undo2, Redo2, ScissorsLineDashed, ChevronLeft, ChevronRight, Trash2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/Tooltip";
@@ -17,6 +18,7 @@ import { EditingActions } from "@/core/interactions";
 import { useAnchoredTimelineZoom, type TimelineZoomAnchor } from "@/hooks/useAnchoredTimelineZoom";
 
 export const TimelineToolbar: React.FC = () => {
+  const { t } = useTranslation("editor");
   const { zoomLevel, pixelsPerSecond, swapClips, rippleEditEnabled, toggleRippleEdit, tracks, normalizeTrack } = useTimelineStore();
   const { selectedClipIds, clearSelection } = useUIStore();
   const { state: historyState, undo, redo } = useHistoryStore();
@@ -132,7 +134,7 @@ export const TimelineToolbar: React.FC = () => {
   const handleSplitAllAtPlayhead = () => {
     const results = EditingActions.splitAtPlayhead();
     if (results.length === 0) {
-      setToastMessage("No clips under playhead to split");
+      setToastMessage(t("noClipsUnderPlayheadToSplit"));
     } else {
       const successCount = results.filter((r) => r.success).length;
       setToastMessage(`Split ${successCount} clip${successCount > 1 ? "s" : ""}`);
@@ -143,7 +145,7 @@ export const TimelineToolbar: React.FC = () => {
   const handleDeleteLeftAtPlayhead = () => {
     const results = EditingActions.deleteLeftAtPlayhead();
     if (results.length === 0) {
-      setToastMessage("No clips to delete left at playhead");
+      setToastMessage(t("noClipsToDeleteLeftAtPlayhead"));
     } else {
       const successCount = results.filter((r) => r.success).length;
       setToastMessage(`Delete left applied to ${successCount} clip${successCount > 1 ? "s" : ""}`);
@@ -154,7 +156,7 @@ export const TimelineToolbar: React.FC = () => {
   const handleDeleteRightAtPlayhead = () => {
     const results = EditingActions.deleteRightAtPlayhead();
     if (results.length === 0) {
-      setToastMessage("No clips to delete right at playhead");
+      setToastMessage(t("noClipsToDeleteRightAtPlayhead"));
     } else {
       const successCount = results.filter((r) => r.success).length;
       setToastMessage(`Delete right applied to ${successCount} clip${successCount > 1 ? "s" : ""}`);
@@ -220,7 +222,7 @@ export const TimelineToolbar: React.FC = () => {
     const trackIds = tracks.map((t) => t.id);
     trackIds.forEach((trackId) => normalizeTrack(trackId));
     removeEmptyNonMainTracks(trackIds);
-    setToastMessage("Closed timeline gaps");
+    setToastMessage(t("closedTimelineGaps"));
     setTimeout(() => setToastMessage(null), 2000);
   };
 
@@ -228,39 +230,39 @@ export const TimelineToolbar: React.FC = () => {
     <TooltipProvider>
       <div data-timeline-interactive="true" className="border-b border-timeline-toolbar-border flex items-center p-1 gap-2">
         <div className="flex items-center gap-1">
-          <Tool label="Undo (Cmd+Z)">
+          <Tool label={t("undoShortcut")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={undo} disabled={!historyState.canUndo}>
               <Undo2 className="w-4 h-4" />
             </Button>
           </Tool>
 
-          <Tool label="Redo (Cmd+Shift+Z)">
+          <Tool label={t("redoShortcut")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={redo} disabled={!historyState.canRedo}>
               <Redo2 className="w-4 h-4" />
             </Button>
           </Tool>
 
           {selectedClipIds.length === 2 && (
-            <Tool label="Swap selected clips (Ctrl+Shift+S)">
+            <Tool label={t("swapSelectedClipsShortcut")}>
               <Button variant="ghost" size="icon-sm" className={toolButton} onClick={handleSwapClick}>
                 <ArrowLeftRight className="w-4 h-4" />
               </Button>
             </Tool>
           )}
 
-          <Tool label="Delete left at playhead (Q)">
+          <Tool label={t("deleteLeftShortcut")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={handleDeleteLeftAtPlayhead}>
               <ChevronLeft className="w-4 h-4" />
             </Button>
           </Tool>
 
-          <Tool label="Delete right at playhead (W)">
+          <Tool label={t("deleteRightShortcut")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={handleDeleteRightAtPlayhead}>
               <ChevronRight className="w-4 h-4" />
             </Button>
           </Tool>
 
-          <Tool label="Split all at playhead (S)">
+          <Tool label={t("splitAllShortcut")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={handleSplitAllAtPlayhead}>
               <ScissorsLineDashed className="w-4 h-4" />
             </Button>
@@ -272,25 +274,25 @@ export const TimelineToolbar: React.FC = () => {
             </Button>
           </Tool> */}
 
-          <Tool label="Ripple mode (R) - Affects drag, trim, and delete operations">
+          <Tool label={t("rippleMode")}>
             <Button variant="ghost" size="icon-sm" className={rippleEditEnabled ? activeButton : toolButton} onClick={toggleRippleEdit}>
               <Waves className="w-4 h-4" />
             </Button>
           </Tool>
 
-          <Tool label="Delete selected clip(s)">
+          <Tool label={t("deleteSelectedClips")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={handleDeleteSelectedClips} disabled={selectedClipIds.length === 0}>
               <Trash2 className="w-4 h-4" />
             </Button>
           </Tool>
 
-          <Tool label="Duplicate selected clip(s) (Cmd/Ctrl+D)">
+          <Tool label={t("duplicateSelectedClips")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={handleDuplicateSelectedClips} disabled={selectedClipIds.length === 0}>
               <Copy className="w-4 h-4" />
             </Button>
           </Tool>
 
-          <Tool label="Close gaps">
+          <Tool label={t("closeGaps")}>
             <Button variant="ghost" size="icon-sm" className={toolButton} onClick={handleCloseGaps}>
               <ScissorsLineDashed className="w-4 h-4" />
             </Button>
@@ -299,11 +301,11 @@ export const TimelineToolbar: React.FC = () => {
 
         <div className="ml-auto flex items-center gap-2">
           <span className="inline-flex items-center gap-1">
-            <Button title="Zoom Out" variant="ghost" size="icon-sm" className={zoomButton} onClick={() => zoomByStep(-1)} disabled={zoomLevel <= TIMELINE_ZOOM_MIN} aria-label="Zoom out timeline">
+            <Button title={t("zoomOut")} variant="ghost" size="icon-sm" className={zoomButton} onClick={() => zoomByStep(-1)} disabled={zoomLevel <= TIMELINE_ZOOM_MIN} aria-label={t("zoomOutTimeline")}>
               <ZoomOut className="w-2 h-2" strokeWidth={2} />
             </Button>
 
-            <div ref={zoomRailRef} role="slider" tabIndex={0} aria-label="Timeline zoom" aria-valuemin={TIMELINE_ZOOM_MIN} aria-valuemax={TIMELINE_ZOOM_MAX} aria-valuenow={zoomLevel} aria-valuetext={`${zoomLevel.toFixed(2)} times, ${currentTierLabel}, ${temporalDetail.label}, ${cadenceLabel} samples`} onPointerDown={handleZoomPointerDown} onPointerMove={handleZoomPointerMove} onPointerUp={handleZoomPointerUp} onPointerCancel={handleZoomPointerCancel} onLostPointerCapture={handleZoomPointerCancel} onKeyDown={handleZoomKeyDown} className="group relative flex h-8 w-44 cursor-pointer touch-none items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
+            <div ref={zoomRailRef} role="slider" tabIndex={0} aria-label={t("timelineZoom")} aria-valuemin={TIMELINE_ZOOM_MIN} aria-valuemax={TIMELINE_ZOOM_MAX} aria-valuenow={zoomLevel} aria-valuetext={`${zoomLevel.toFixed(2)} times, ${currentTierLabel}, ${temporalDetail.label}, ${cadenceLabel} samples`} onPointerDown={handleZoomPointerDown} onPointerMove={handleZoomPointerMove} onPointerUp={handleZoomPointerUp} onPointerCancel={handleZoomPointerCancel} onLostPointerCapture={handleZoomPointerCancel} onKeyDown={handleZoomKeyDown} className="group relative flex h-8 w-44 cursor-pointer touch-none items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
               <div className="relative mx-[11px] h-[7px] w-full overflow-hidden rounded-full bg-surface-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.04),0_5px_14px_rgba(0,0,0,0.28)]">
                 {tierSegments.map(({ tier, left, width }) => (
                   <div key={tier} aria-hidden className={`absolute top-0 h-full ${tierBandClass[tier]}`} style={{ left: `${left}%`, width: `${width}%` }} />
@@ -313,7 +315,7 @@ export const TimelineToolbar: React.FC = () => {
               <div data-testid="timeline-zoom-thumb" className="absolute top-1/2 h-[15px] w-[15px] -translate-x-1/2 -translate-y-1/2 rounded-full border-3 border-accent bg-surface" style={{ left: `${zoomThumbLeftPx}px` }} />
             </div>
 
-            <Button title="Zoom In" variant="ghost" size="icon-sm" className={zoomButton} onClick={() => zoomByStep(1)} disabled={zoomLevel >= TIMELINE_ZOOM_MAX} aria-label="Zoom in timeline">
+            <Button title={t("zoomIn")} variant="ghost" size="icon-sm" className={zoomButton} onClick={() => zoomByStep(1)} disabled={zoomLevel >= TIMELINE_ZOOM_MAX} aria-label={t("zoomInTimeline")}>
               <ZoomIn className="w-4 h-4" strokeWidth={2} />
             </Button>
           </span>

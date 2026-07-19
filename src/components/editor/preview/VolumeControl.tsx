@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Volume2, VolumeX } from "lucide-react";
 
 interface VolumeControlProps {
@@ -14,13 +15,14 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   volume,
   setVolume,
 }) => {
+  const { t } = useTranslation("editor");
   return (
     <>
       <button
         onClick={() => setIsMuted((m) => !m)}
         className="w-6 h-6 flex items-center justify-center rounded text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors cursor-pointer"
-        title={isMuted ? "Unmute" : "Mute"}
-        aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+        title={isMuted ? t("unmute") : t("mute")}
+        aria-label={isMuted ? t("unmuteAudio") : t("muteAudio")}
       >
         {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
       </button>

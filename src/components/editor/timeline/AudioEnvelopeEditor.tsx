@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useTimelineStore } from "@/store/timelineStore";
 import { useHistoryStore } from "@/store/historyStore";
 import { TransformClipCommand } from "@/core/history/commands/TransformCommand";
@@ -15,6 +16,7 @@ export const AudioEnvelopeEditor: React.FC<AudioEnvelopeEditorProps> = ({
   clipWidthPx,
   pixelsPerSecond,
 }) => {
+  const { t } = useTranslation("editor");
   const updateClip = useTimelineStore((s) => s.updateClip);
   const { execute } = useHistoryStore();
 
@@ -231,7 +233,7 @@ export const AudioEnvelopeEditor: React.FC<AudioEnvelopeEditorProps> = ({
         }}
         onPointerDown={(e) => handleDragStart(e, "volume")}
         onDoubleClick={handleVolumeDoubleClick}
-        title="Double-click to reset volume"
+        title={t("doubleClickResetVolume")}
       >
         <div className="w-full h-[1.5px] bg-emerald-400/90 shadow-[0_0_4px_rgba(52,211,153,0.5)] hover:bg-white" />
       </div>

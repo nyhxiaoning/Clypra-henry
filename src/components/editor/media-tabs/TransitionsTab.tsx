@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Wand2, Plus, AlertCircle } from "lucide-react";
 import type { TabProps } from "./types";
 import { useProjectStore } from "@/store/projectStore";
@@ -29,6 +30,7 @@ const TRANSITION_CATEGORIES = [
 type TransitionCategory = (typeof TRANSITION_CATEGORIES)[number]["id"];
 
 export const TransitionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const [activeCategory, setActiveCategory] = useState<TransitionCategory>("geometric");
   const [transitions, setTransitions] = useState<TransitionAsset[]>([]);
   const [loading, setLoading] = useState(false);
@@ -108,7 +110,7 @@ export const TransitionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
           <div className="mb-3 p-3 rounded-lg border border-red-500/20 bg-red-500/5 text-red-200 flex items-start gap-2.5 text-xs">
             <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold">Failed to load transitions</p>
+              <p className="font-semibold">{t("failedToLoadTransitions")}</p>
               <p className="opacity-80 mt-0.5">{error}</p>
             </div>
           </div>
@@ -126,8 +128,8 @@ export const TransitionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         ) : filteredTransitions.length === 0 ? (
           <div className="h-40 flex flex-col items-center justify-center text-text-muted gap-1 text-xs">
             <Wand2 className="w-5 h-5" />
-            <p>No matching transitions found</p>
-            <p className="opacity-60">Try another category or search</p>
+            <p>{t("noMatchingTransitions")}</p>
+            <p className="opacity-60">{t("tryAnotherCategory")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-1.5">
@@ -154,6 +156,7 @@ const SkeletonCard = () => (
 );
 
 const TransitionCard: React.FC<{ transition: TransitionAsset; onAddToTimeline: () => void; disabled?: boolean }> = ({ transition, onAddToTimeline, disabled = false }) => {
+  const { t } = useTranslation("editor");
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -183,7 +186,7 @@ const TransitionCard: React.FC<{ transition: TransitionAsset; onAddToTimeline: (
     e.stopPropagation();
     if (disabled) return;
     onAddToTimeline();
-    useProjectStore.getState().showToast(`Added ${transition.name} transition`);
+    useProjectStore.getState().showToast(t("addedTransition", {name: transition.name}));
   };
 
   const cardContent = (
@@ -214,7 +217,7 @@ const TransitionCard: React.FC<{ transition: TransitionAsset; onAddToTimeline: (
       {/* Footer - name + apply button, always visible */}
       <div className="flex items-center justify-between w-full mt-0.5 z-10">
         <span className={`text-[9px] font-medium truncate max-w-[65px] ${disabled ? "text-text-muted" : "text-text-muted group-hover:text-text-primary"} transition-colors`}>{transition.name}</span>
-        <button onClick={handleAddToTimeline} title={disabled ? "Select two clips or place playhead at a cut" : "Add transition to timeline"} aria-label="Add transition to timeline" disabled={disabled} className={`w-4 h-4 rounded-full flex items-center justify-center transition-all border ${disabled ? "bg-surface/40 border-border/30 text-text-muted cursor-not-allowed" : "bg-accent hover:bg-accent/85 border-accent text-white cursor-pointer"}`}>
+        <button onClick={handleAddToTimeline} title={disabled ? t("selectTwoClips") : t("addTransitionToTimeline")} aria-label={t("addTransitionToTimeline")} disabled={disabled} className={`w-4 h-4 rounded-full flex items-center justify-center transition-all border ${disabled ? "bg-surface/40 border-border/30 text-text-muted cursor-not-allowed" : "bg-accent hover:bg-accent/85 border-accent text-white cursor-pointer"}`}>
           <Plus className={`w-3 h-3 ${!disabled && "group-hover:scale-110"} transition-transform`} />
         </button>
       </div>

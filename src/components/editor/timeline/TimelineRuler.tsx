@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { usePlaybackClock } from "@/hooks/usePlaybackClock";
 import { useTimelineStore } from "@/store/timelineStore";
 import type { TimelineMarker } from "@/types";
@@ -177,6 +178,7 @@ interface MarkerPopoverProps {
 }
 
 const MarkerPopover: React.FC<MarkerPopoverProps> = ({ marker, x, onClose, onUpdate, onDelete }) => {
+  const { t } = useTranslation("editor");
   const [name, setName] = useState(marker.name);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -238,7 +240,7 @@ const MarkerPopover: React.FC<MarkerPopoverProps> = ({ marker, x, onClose, onUpd
           if (e.key === "Escape") onClose();
           e.stopPropagation();
         }}
-        placeholder="Marker name…"
+        placeholder={t("markerName")}
         style={{
           background: "rgba(255,255,255,0.07)",
           border: "1px solid rgba(255,255,255,0.14)",
@@ -276,7 +278,7 @@ const MarkerPopover: React.FC<MarkerPopoverProps> = ({ marker, x, onClose, onUpd
         {/* Delete */}
         <button
           onClick={onDelete}
-          title="Delete marker"
+          title={t("deleteMarker")}
           style={{
             background: "rgba(239,68,68,0.15)",
             border: "1px solid rgba(239,68,68,0.35)",

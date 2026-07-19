@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,12 +16,13 @@ export const PlaybackQualitySelector: React.FC<PlaybackQualitySelectorProps> = (
   setQualityMenuOpen,
   setPreviewQuality,
 }) => {
+  const { t } = useTranslation("editor");
   return (
     <div className="relative">
       <button
         onClick={() => setQualityMenuOpen(!qualityMenuOpen)}
         className="flex items-center gap-1 px-2 h-6 rounded text-[10px] font-medium text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors cursor-pointer"
-        title="Playback quality"
+        title={t("playbackQuality")}
         aria-expanded={qualityMenuOpen}
       >
         <span className="max-w-18 truncate capitalize">{previewQuality}</span>
@@ -35,23 +37,23 @@ export const PlaybackQualitySelector: React.FC<PlaybackQualitySelectorProps> = (
             {[
               {
                 value: "full",
-                label: "Full quality",
-                description: "Original video resolution",
+                label: t("fullQuality"),
+                description: t("fullQualityDesc"),
               },
               {
                 value: "high",
-                label: "High quality",
-                description: "Smooth playback, no impact on exported video",
+                label: t("highQuality"),
+                description: t("highQualityDesc"),
               },
               {
                 value: "medium",
-                label: "Medium quality",
-                description: "Smoother playback, no impact on exported video",
+                label: t("mediumQuality"),
+                description: t("mediumQualityDesc"),
               },
               {
                 value: "low",
-                label: "Low quality",
-                description: "Smoothest playback, no impact on exported video",
+                label: t("lowQuality"),
+                description: t("lowQualityDesc"),
               },
             ].map((q) => (
               <button

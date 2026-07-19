@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { CloudUpload } from "lucide-react";
 import { platform } from "@/core/platform";
 
@@ -21,6 +22,7 @@ import { SuccessToast } from "@/components/ui/SuccessToast";
 import { MediaCard } from "@/components/ui/MediaCard";
 
 export const MediaTab: React.FC<MediaTabProps> = ({ onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const { mediaAssets, removeMediaAsset, addMediaAsset } = useProjectStore();
   const { importMedia, isLoading, toastMessage, clearToast } = useMediaImport();
   // Note: previewMediaId is used for visual selection state only.
@@ -112,7 +114,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({ onAddToTimeline }) => {
 
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {mediaAssets.length === 0 ? (
-          <EmptyState icon={CloudUpload} title="No media imported" description="Import videos, audio, or images to get started" />
+          <EmptyState icon={CloudUpload} title={t("noMediaImported")} description={t("noMediaImportedDesc")} />
         ) : (
           <div className="grid grid-cols-2 gap-2 p-1">
             {mediaAssets.map((asset) => (

@@ -21,12 +21,12 @@ interface SettingsModalProps {
 type Tab = "appearance" | "editor" | "shortcuts" | "captions" | "cache" | "about";
 
 const TABS: { id: Tab; label: string; icon: React.FC<{ className?: string }> }[] = [
-  { id: "appearance", label: "settings.appearance", icon: Palette },
-  { id: "editor", label: "settings.editor", icon: SlidersHorizontal },
-  { id: "shortcuts", label: "settings.shortcuts", icon: Keyboard },
-  { id: "captions", label: "settings.autoCaptions", icon: Captions },
-  { id: "cache", label: "settings.storageAndCache", icon: HardDrive },
-  { id: "about", label: "settings.about", icon: Info },
+  { id: "appearance", label: "appearance", icon: Palette },
+  { id: "editor", label: "editor", icon: SlidersHorizontal },
+  { id: "shortcuts", label: "shortcuts", icon: Keyboard },
+  { id: "captions", label: "autoCaptions", icon: Captions },
+  { id: "cache", label: "storageAndCache", icon: HardDrive },
+  { id: "about", label: "about", icon: Info },
 ];
 
 // ─── Enhanced theme preview with timeline ────────────────────────────────
@@ -130,6 +130,7 @@ function ThemeSwatch({ themeId, selected, onSelect, customColors }: { themeId: T
 
 // ─── Custom Theme Editor ─────────────────────────────────────────────────
 function CustomThemeEditor() {
+  const { t } = useTranslation("settings");
   const { customTheme, setCustomTheme, resetCustomTheme } = useSettingsStore();
   const [baseTheme, setBaseTheme] = useState<Exclude<Theme, "custom">>("dark");
   const [editingColors, setEditingColors] = useState<Record<string, string>>(customTheme || getBaseThemeForCustomization("dark"));
@@ -228,16 +229,16 @@ function CustomThemeEditor() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-white/6">
-        <h3 className="text-[13px] font-semibold text-text-primary">Custom Theme Editor</h3>
+        <h3 className="text-[13px] font-semibold text-text-primary">{t("customThemeEditor")}</h3>
         {/* Import/Export buttons in header */}
         <div className="flex items-center gap-2">
-          <button onClick={handleImport} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-accent hover:border-accent/40 transition-colors" title="Import theme from JSON file">
+          <button onClick={handleImport} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-accent hover:border-accent/40 transition-colors" title={t("importTheme")}>
             <Upload className="w-3.5 h-3.5" />
-            Import
+            {t("import")}
           </button>
-          <button onClick={handleExport} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-accent hover:border-accent/40 transition-colors" title="Export theme to JSON file">
+          <button onClick={handleExport} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-accent hover:border-accent/40 transition-colors" title={t("exportTheme")}>
             <Download className="w-3.5 h-3.5" />
-            Export
+            {t("export")}
           </button>
         </div>
       </div>
@@ -246,7 +247,7 @@ function CustomThemeEditor() {
       <div className="flex items-center justify-between gap-3">
         {/* Base theme group */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium text-text-muted uppercase tracking-wide">Base:</span>
+          <span className="text-[10px] font-medium text-text-muted uppercase tracking-wide">{t("base")}:</span>
           <div className="relative">
             <select value={baseTheme} onChange={(e) => handleBaseThemeChange(e.target.value as Exclude<Theme, "custom">)} className="appearance-none text-[11px] pl-3 pr-8 py-1.5 rounded-md bg-surface-raised border border-white/6 text-text-primary hover:border-white/12 transition-colors cursor-pointer focus:outline-none focus:border-accent/40">
               <option value="dark">Dark</option>
@@ -265,21 +266,21 @@ function CustomThemeEditor() {
               </svg>
             </div>
           </div>
-          <button onClick={handleCopyFromBase} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-text-primary hover:border-white/12 transition-colors" title="Copy all colors from selected base theme">
+          <button onClick={handleCopyFromBase} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-text-primary hover:border-white/12 transition-colors" title={t("copyColorsFromBase")}>
             <Copy className="w-3.5 h-3.5" />
-            Copy
+            {t("copy")}
           </button>
         </div>
 
         {/* Reset button */}
-        <button onClick={handleReset} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-danger hover:border-danger/40 transition-colors" title="Reset to default dark theme">
+        <button onClick={handleReset} className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-danger hover:border-danger/40 transition-colors" title={t("resetToDefaultDarkTheme")}>
           <RotateCcw className="w-3.5 h-3.5" />
-          Reset
+          {t("reset")}
         </button>
       </div>
 
       {/* Search */}
-      <input type="text" placeholder="Search colors..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full px-3 py-2 text-[12px] rounded-lg bg-surface-raised border border-white/6 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/40" />
+      <input type="text" placeholder={t("searchColors")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full px-3 py-2 text-[12px] rounded-lg bg-surface-raised border border-white/6 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/40" />
 
       {/* Color groups */}
       <div className="max-h-[400px] overflow-y-auto space-y-4 pr-2 scrollbar-thin">
@@ -307,7 +308,7 @@ function CustomThemeEditor() {
 
       {/* Apply button */}
       <button onClick={handleApply} className="w-full py-2 px-4 text-[12px] font-semibold rounded-lg bg-accent text-white hover:bg-accent-soft transition-colors">
-        Apply Custom Theme
+        {t("applyCustomTheme")}
       </button>
     </div>
   );
@@ -315,6 +316,7 @@ function CustomThemeEditor() {
 
 // ─── Appearance Tab ──────────────────────────────────────────────────────
 function AppearanceTab() {
+  const { t } = useTranslation("settings");
   const { theme, fontFamily, customTheme, setTheme, setFontFamily, language, setLanguage } = useSettingsStore();
   const [showCustomEditor, setShowCustomEditor] = useState(false);
   const themeKeys: Theme[] = ["dark", "midnight", "ocean", "forest", "midnight-carbon", "ember-studio", "forest-console", "slate-noir", "rose-cut"];
@@ -325,10 +327,10 @@ function AppearanceTab() {
       {/* Themes */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">Theme</h3>
+          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">{t("theme")}</h3>
           <button onClick={() => setShowCustomEditor(!showCustomEditor)} className={`flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium rounded-md transition-colors ${showCustomEditor ? "bg-accent/15 text-accent border border-accent/40" : "bg-surface-raised border border-white/6 text-text-muted hover:text-text-primary"}`}>
             <Paintbrush className="w-3 h-3" />
-            {showCustomEditor ? "Hide Editor" : "Custom Theme"}
+            {showCustomEditor ? t("hideEditor") : t("customTheme")}
           </button>
         </div>
 
@@ -346,7 +348,7 @@ function AppearanceTab() {
 
       {/* Font Family */}
       <section>
-        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">Font</h3>
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">{t("font")}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {fontKeys.map((f) => {
             const meta = FONT_META[f];
@@ -365,7 +367,7 @@ function AppearanceTab() {
 
       {/* Language */}
       <section>
-        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">App language</h3>
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">{t("appLanguage")}</h3>
         <select
           value={language}
           onChange={(event) => {
@@ -428,12 +430,12 @@ function EditorTab() {
   return (
     <div className="space-y-6">
       <section>
-        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">Timeline</h3>
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">{t("timeline")}</h3>
         <div className="space-y-3">
-          <SettingRow label={t("settings.snapToGrid")} description={t("settings.snapToGrid")}>
+          <SettingRow label={t("snapToGrid")} description={t("snapToGrid")}>
             <ToggleSwitch checked={snapToGrid} onChange={setSnapToGrid} />
           </SettingRow>
-          <SettingRow label={t("settings.snapToGrid")} description={t("settings.snapToGrid")}>
+          <SettingRow label={t("timelineSnap")} description={t("timelineSnap")}>
             <ToggleSwitch checked={snapEnabled} onChange={toggleSnapEnabled} />
           </SettingRow>
         </div>
@@ -441,9 +443,9 @@ function EditorTab() {
 
       {project && (
         <section>
-          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">Sequence Settings</h3>
+          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">{t("sequenceSettings")}</h3>
           <div className="space-y-3">
-            <SettingRow label="Aspect ratio" description="Canvas dimensions for export">
+            <SettingRow label={t("aspectRatio")} description={t("canvasDimensionsForExport")}>
               <div className="flex flex-col gap-1.5">
                 <div className="flex rounded-lg overflow-hidden border border-white/6">
                   {aspectRatios.map((ar) => (
@@ -457,7 +459,7 @@ function EditorTab() {
                 </div>
               </div>
             </SettingRow>
-            <SettingRow label="Frame rate" description="Frames per second for this project">
+            <SettingRow label={t("frameRate")} description={t("framesPerSecond")}>
               <div className="flex rounded-lg overflow-hidden border border-white/6">
                 {frameRates.map((fr) => (
                   <button key={fr.value} onClick={() => updateProject({ frameRate: fr.value })} className={`px-3 py-1 text-[11px] font-semibold transition-colors ${project.frameRate === fr.value ? "bg-accent text-white" : "bg-surface-raised text-text-muted hover:text-text-primary hover:bg-white/6"}`}>
@@ -472,7 +474,7 @@ function EditorTab() {
       )}
 
       <section>
-        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">Defaults</h3>
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">{t("defaults")}</h3>
         <div className="space-y-3">
           <SettingRow label={t("settings.autoSave")} description={t("settings.autoSave")}>
             <ToggleSwitch checked={autoSave} onChange={setAutoSave} />
@@ -542,6 +544,7 @@ const openExternalUrl = async (url: string) => {
 
 // ─── About Tab ───────────────────────────────────────────────────────────
 function AboutTab() {
+  const { t } = useTranslation("settings");
   const [updateStatus, setUpdateStatus] = useState<"idle" | "checking" | "up-to-date" | "available" | "downloading" | "error">("idle");
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateInfo, setUpdateInfo] = useState<{ version: string; body?: string } | null>(null);
@@ -591,14 +594,14 @@ function AboutTab() {
       </div>
       <div>
         <h3 className="text-lg font-bold text-text-primary">Clypra</h3>
-        <p className="text-xs text-text-muted mt-1">Version 1.0.1</p>
+        <p className="text-xs text-text-muted mt-1">{t("version", { version: "1.0.1" })}</p>
       </div>
-      <p className="text-xs text-text-muted max-w-[280px] leading-relaxed">A modern, native video editor built with Tauri, React, and FFmpeg. Designed for speed and creative freedom.</p>
+      <p className="text-xs text-text-muted max-w-[280px] leading-relaxed">{t("appDescription")}</p>
 
       {/* Auto-updater card */}
       <div className="w-full max-w-[340px] bg-linear-to-b from-white/4 to-white/1 border border-white/10 rounded-2xl p-5 flex flex-col items-center gap-4 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-2 w-full justify-between pb-3 border-b border-white/5">
-          <span className="text-xs font-semibold text-text-primary tracking-wide uppercase">Software Update</span>
+          <span className="text-xs font-semibold text-text-primary tracking-wide uppercase">{t("softwareUpdate")}</span>
           {updateStatus === "up-to-date" ? (
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -614,15 +617,15 @@ function AboutTab() {
 
         <div className="flex flex-col items-center gap-1.5 w-full">
           {!isDesktop ? (
-            <p className="text-[11px] text-text-muted">Auto-updates are only available in the desktop app.</p>
+            <p className="text-[11px] text-text-muted">{t("autoUpdatesDesktopOnly")}</p>
           ) : (
             <>
               {updateStatus === "idle" && (
                 <>
-                  <p className="text-[11px] text-text-muted mb-2">Keep Clypra running at peak performance.</p>
+                  <p className="text-[11px] text-text-muted mb-2">{t("keepClypraPeakPerformance")}</p>
                   <button onClick={handleCheckUpdate} className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-text-primary rounded-xl text-xs font-semibold cursor-pointer shadow-sm transition-all duration-200 active:scale-95">
                     <RefreshCw className="w-3.5 h-3.5" />
-                    Check for Updates
+                    {t("checkForUpdates")}
                   </button>
                 </>
               )}
@@ -632,7 +635,7 @@ function AboutTab() {
                   <div className="relative flex items-center justify-center">
                     <div className="w-8 h-8 border-[3px] border-accent/20 border-t-accent rounded-full animate-spin"></div>
                   </div>
-                  <p className="text-xs text-text-muted">Searching for newer releases...</p>
+                  <p className="text-xs text-text-muted">{t("searchingForNewerReleases")}</p>
                 </div>
               )}
 
@@ -641,10 +644,10 @@ function AboutTab() {
                   <div className="w-8 h-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
                     <Check className="w-4 h-4 text-green-400" />
                   </div>
-                  <p className="text-xs text-green-400 font-medium">Clypra is up to date</p>
-                  <p className="text-[10px] text-text-muted">You are currently running the latest version.</p>
+                  <p className="text-xs text-green-400 font-medium">{t("clypraIsUpToDate")}</p>
+                  <p className="text-[10px] text-text-muted">{t("runningLatestVersion")}</p>
                   <button onClick={handleCheckUpdate} className="mt-2 text-[10px] text-text-muted hover:text-text-primary transition-colors hover:underline cursor-pointer">
-                    Check again
+                    {t("checkAgain")}
                   </button>
                 </div>
               )}
@@ -652,19 +655,19 @@ function AboutTab() {
               {updateStatus === "available" && updateInfo && (
                 <div className="flex flex-col items-center gap-3 w-full">
                   <div className="flex flex-col items-center gap-1">
-                    <p className="text-xs text-text-primary font-bold">New Version Available</p>
+                    <p className="text-xs text-text-primary font-bold">{t("newVersionAvailable")}</p>
                     <p className="text-[10px] text-accent font-semibold">v{updateInfo.version}</p>
                   </div>
 
                   {updateInfo.body && (
                     <div className="w-full text-left">
-                      <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1">Release Notes</p>
+                      <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-1">{t("releaseNotes")}</p>
                       <div className="text-[10px] text-text-muted max-h-20 overflow-y-auto px-2.5 py-2 w-full leading-normal border border-white/5 bg-white/2 rounded-xl scrollbar-thin">{updateInfo.body}</div>
                     </div>
                   )}
 
                   <button onClick={handleInstallUpdate} className="w-full py-2 bg-linear-to-r from-accent to-violet-500 hover:from-accent-hover hover:to-violet-600 text-white rounded-xl text-xs font-semibold cursor-pointer shadow-[0_0_15px_rgba(96,165,250,0.2)] hover:shadow-[0_0_20px_rgba(96,165,250,0.4)] transition-all duration-200 active:scale-[0.98]">
-                    Download & Install Update
+                    {t("downloadAndInstallUpdate")}
                   </button>
                 </div>
               )}
@@ -672,13 +675,13 @@ function AboutTab() {
               {updateStatus === "downloading" && (
                 <div className="flex flex-col items-center gap-3 w-full py-1">
                   <div className="flex justify-between text-[11px] text-text-primary font-medium w-full">
-                    <span>Downloading update...</span>
+                    <span>{t("downloadingUpdate")}</span>
                     <span className="font-semibold text-accent">{downloadProgress}%</span>
                   </div>
                   <div className="w-full bg-white/5 border border-white/5 h-2 rounded-full overflow-hidden p-px">
                     <div className="bg-linear-to-r from-accent to-violet-500 h-full rounded-full transition-all duration-300" style={{ width: `${downloadProgress}%` }}></div>
                   </div>
-                  <p className="text-[9px] text-text-muted">The application will automatically restart once complete.</p>
+                  <p className="text-[9px] text-text-muted">{t("appWillRestartAutomatically")}</p>
                 </div>
               )}
 
@@ -687,11 +690,11 @@ function AboutTab() {
                   <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
                     <span className="text-red-400 text-sm font-bold">!</span>
                   </div>
-                  <p className="text-xs text-red-400 font-medium">Update Check Failed</p>
-                  <p className="text-[10px] text-text-muted max-w-[260px] leading-normal line-clamp-2">{updateError || "An unknown error occurred."}</p>
+                  <p className="text-xs text-red-400 font-medium">{t("updateCheckFailed")}</p>
+                  <p className="text-[10px] text-text-muted max-w-[260px] leading-normal line-clamp-2">{updateError || t("unknownError")}</p>
                   <button onClick={handleCheckUpdate} className="mt-1 flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-text-primary rounded-xl text-xs font-semibold cursor-pointer transition-all duration-200 active:scale-95">
                     <RefreshCw className="w-3 h-3" />
-                    Try Again
+                    {t("tryAgain")}
                   </button>
                 </div>
               )}
@@ -703,7 +706,7 @@ function AboutTab() {
       <div className="flex items-center gap-4 mt-2">
         <button onClick={() => openExternalUrl("https://github.com/AIEraDev/clypra")} className="text-xs font-medium text-text-muted hover:text-accent transition-colors flex items-center gap-1.5">
           <GithubIcon className="w-3.5 h-3.5" />
-          GitHub
+          {t("github")}
         </button>
         <button onClick={() => openExternalUrl("https://x.com/AIEraDev")} className="text-xs font-medium text-text-muted hover:text-accent transition-colors flex items-center gap-1.5">
           <XIcon className="w-3.5 h-3.5" />

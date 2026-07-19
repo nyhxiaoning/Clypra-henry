@@ -40,6 +40,7 @@ Clypra 是一个基于 Tauri v2 + React 19 + TypeScript 的开源桌面/移动�
 ## 4. 启动、构建、测试命令是什么
 
 ```bash
+npm run tauri dev
 npm run dev
 npm run build
 npm run preview

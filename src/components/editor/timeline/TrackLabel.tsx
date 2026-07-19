@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Volume2, VolumeX, Lock, Unlock, Eye, EyeOff, Minimize2 } from "lucide-react";
 import { useTimelineStore } from "@/store/timelineStore";
 import { useUIStore } from "@/store/uiStore";
@@ -17,6 +18,7 @@ interface TrackLabelProps {
  * stays pinned while the clip area scrolls horizontally.
  */
 export const TrackLabel: React.FC<TrackLabelProps> = ({ track }) => {
+  const { t } = useTranslation("editor");
   const { clips, gaps, toggleTrackLock, toggleTrackMute, toggleTrackVisibility } = useTimelineStore();
   const { selectedTrackId, selectTrack } = useUIStore();
 
@@ -87,8 +89,8 @@ export const TrackLabel: React.FC<TrackLabelProps> = ({ track }) => {
             GapManager.packTrack(track.id);
           }}
           className="p-1 rounded transition-colors cursor-pointer hover:bg-timeline-button-hover text-timeline-button-icon opacity-0 group-hover:opacity-100"
-          aria-label="Pack track (remove gaps)"
-          title="Pack track - remove all unprotected gaps"
+          aria-label={t("packTrack")}
+          title={t("packTrack")}
         >
           <Minimize2 className="w-3 h-3" />
         </button>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Type, Square, Image, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TextTemplate } from "@/features/text-templates/types";
@@ -15,6 +16,7 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
   customization = {},
   onChange,
 }) => {
+  const { t } = useTranslation("editor");
   const [expandedLayerId, setExpandedLayerId] = useState<string | null>(null);
 
   const handleLayerTextChange = (layerId: string, text: string, role?: string) => {
@@ -163,7 +165,7 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
                 {layer.kind === "text" && (
                   <>
                     <div className="space-y-1">
-                      <label className="text-[9px] text-zinc-400 block font-medium">Text Content</label>
+                      <label className="text-[9px] text-zinc-400 block font-medium">{t("textContent")}</label>
                       <textarea
                         value={currentText}
                         onChange={(e) => handleLayerTextChange(layer.id, e.target.value, layer.role)}
@@ -173,7 +175,7 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] text-zinc-400 font-medium">Text Color</span>
+                      <span className="text-[9px] text-zinc-400 font-medium">{t("textColor")}</span>
                       <div className="flex items-center gap-1.5">
                         <span className="text-[10px] text-zinc-500 tabular-nums uppercase">
                           {currentColor}
@@ -197,7 +199,7 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
                     />
 
                     <div className="space-y-1">
-                      <label className="text-[9px] text-zinc-400 block font-medium">Font Weight</label>
+                      <label className="text-[9px] text-zinc-400 block font-medium">{t("fontWeight")}</label>
                       <select
                         value={currentFontWeight}
                         onChange={(e) => handleLayerFontPropertyChange(layer.id, "fontWeight", Number(e.target.value))}
@@ -219,7 +221,7 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
 
                 {layer.kind === "shape" && (
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] text-zinc-400 font-medium">Fill Color</span>
+                    <span className="text-[9px] text-zinc-400 font-medium">{t("fillColor")}</span>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] text-zinc-500 tabular-nums uppercase">
                         {currentColor}

@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Filter, Grid3X3, Plus, Search, SlidersHorizontal, Sparkles, Sun, Palette, Droplets, Camera, AlertCircle, Download, Loader2, Star, type LucideIcon } from "lucide-react";
 import type { TabProps } from "./types";
 import { useProjectStore } from "@/store/projectStore";
@@ -43,6 +44,7 @@ const DEFAULT_FILTER_CATEGORIES = [
 ];
 
 export const FiltersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<FilterCategory>("essentials");
   const [categories, setCategories] = useState(DEFAULT_FILTER_CATEGORIES);
@@ -117,7 +119,7 @@ export const FiltersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
           <div className="mb-3 p-3 rounded-lg border border-red-500/20 bg-red-500/5 text-red-200 flex items-start gap-2.5 text-xs">
             <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold">Failed to load filters</p>
+              <p className="font-semibold">{t("failedToLoadFilters")}</p>
               <p className="opacity-80 mt-0.5">{error}</p>
             </div>
           </div>
@@ -135,8 +137,8 @@ export const FiltersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         ) : filteredFilters.length === 0 ? (
           <div className="h-40 flex flex-col items-center justify-center text-text-muted gap-1 text-xs">
             <Filter className="w-5 h-5" />
-            <p>No matching filters found</p>
-            <p className="opacity-60">Try another category or search</p>
+            <p>{t("noMatchingFilters")}</p>
+            <p className="opacity-60">{t("tryAnotherCategory")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-1.5">
@@ -169,6 +171,7 @@ interface FilterCardProps {
 }
 
 const FilterCard: React.FC<FilterCardProps> = ({ filter, isFavorite, onFavorite, onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const Icon = FILTER_ICONS[filter.id] || DEFAULT_ICON;
   const isReady = true; // All filters are ready (status field is just for UI labeling)
   const [isDownloading, setIsDownloading] = useState(false);
@@ -245,7 +248,7 @@ const FilterCard: React.FC<FilterCardProps> = ({ filter, isFavorite, onFavorite,
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
           <div className="flex flex-col items-center gap-2">
             <Loader2 className="w-8 h-8 text-accent animate-spin" />
-            <span className="text-[10px] font-semibold text-accent">Downloading...</span>
+            <span className="text-[10px] font-semibold text-accent">{t("downloading")}</span>
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AlertCircle, CheckCircle, Download, Loader2, Music2, Pause, Play, Plus, Search } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip";
 import { NetworkError } from "@/components/ui/NetworkError";
@@ -10,6 +11,7 @@ import type { MediaAsset } from "@/types";
 import { platform } from "@/core/platform";
 
 export const AudioTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<AudioLibraryCategory>("music");
   const [items, setItems] = useState<AudioLibraryItem[]>([]);
@@ -86,8 +88,8 @@ export const AudioTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         {!loading && !error && filteredItems.length === 0 && (
           <div className="rounded-lg border border-border bg-surface-raised/40 p-4 text-center">
             <Music2 className="mx-auto mb-2 h-5 w-5 text-text-muted" />
-            <p className="text-xs font-semibold text-text-primary">No approved audio yet</p>
-            <p className="mt-1 text-[11px] leading-relaxed text-text-muted">Audio published from Clypra Studio will appear here after API cache refresh.</p>
+            <p className="text-xs font-semibold text-text-primary">{t("noApprovedAudio")}</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-text-muted">{t("noApprovedAudioDesc")}</p>
           </div>
         )}
 

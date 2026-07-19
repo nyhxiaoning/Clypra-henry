@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronDown } from "lucide-react";
 import { AspectRatio, PREVIEW_ASPECT_LABEL } from "@/types";
 import { AspectMenuRow } from "../../ui/AspectRatio";
@@ -49,12 +50,13 @@ export const AspectSelector: React.FC<AspectSelectorProps> = ({
   canvasWidth,
   canvasHeight,
 }) => {
+  const { t } = useTranslation("editor");
   return (
     <div className="relative shrink-0">
       <button
         onClick={() => setAspectMenuOpen(!aspectMenuOpen)}
         className="flex items-center gap-1 px-2 h-6 rounded text-[10px] font-medium text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors cursor-pointer"
-        title="Preview aspect ratio"
+        title={t("previewAspectRatio")}
         aria-expanded={aspectMenuOpen}
       >
         <span className="max-w-18 truncate">

@@ -1,5 +1,6 @@
 import React from "react";
 import { Type, Sparkles, Layout } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 interface TextModeSelectorProps {
@@ -11,6 +12,7 @@ export const TextModeSelector: React.FC<TextModeSelectorProps> = ({
   mode,
   onSwitch,
 }) => {
+  const { t } = useTranslation("editor");
   return (
     <div className="flex p-1 bg-zinc-900 border border-zinc-800 rounded-lg gap-1 mb-4 select-none">
       <button
@@ -23,7 +25,7 @@ export const TextModeSelector: React.FC<TextModeSelectorProps> = ({
         )}
       >
         <Type className="w-3.5 h-3.5" />
-        <span>Plain Text</span>
+        <span>{t("plainText")}</span>
       </button>
       
       <button
@@ -36,7 +38,7 @@ export const TextModeSelector: React.FC<TextModeSelectorProps> = ({
         )}
       >
         <Sparkles className="w-3.5 h-3.5" />
-        <span>Text Effect</span>
+        <span>{t("textEffect")}</span>
       </button>
 
       <button
@@ -49,7 +51,7 @@ export const TextModeSelector: React.FC<TextModeSelectorProps> = ({
         )}
       >
         <Layout className="w-3.5 h-3.5" />
-        <span>Template</span>
+        <span>{t("template")}</span>
       </button>
     </div>
   );

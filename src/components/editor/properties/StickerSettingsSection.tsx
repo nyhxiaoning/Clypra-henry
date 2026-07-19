@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Gauge, RefreshCw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Clip } from "@/types";
 import { PropertySlider } from "./primitives/PropertySlider";
 import { PropertySection } from "./primitives/PropertySection";
@@ -10,6 +11,7 @@ interface StickerSettingsSectionProps {
 }
 
 export const StickerSettingsSection: React.FC<StickerSettingsSectionProps> = ({ selectedClip, handleUpdate }) => {
+  const { t } = useTranslation("editor");
   const stickerSettings = (selectedClip as any).stickerSettings || { speed: 1.0, loop: true };
   const speed = stickerSettings.speed ?? 1.0;
   const loop = stickerSettings.loop ?? true;
@@ -33,11 +35,11 @@ export const StickerSettingsSection: React.FC<StickerSettingsSectionProps> = ({ 
 
   return (
     <div className="space-y-3">
-      <PropertySection title="Sticker Animation" icon={<Gauge className="w-3.5 h-3.5" />}>
+      <PropertySection title={t("stickerAnimation")} icon={<Gauge className="w-3.5 h-3.5" />}>
         <div className="space-y-3">
           {/* Speed slider */}
           <PropertySlider
-            label="Speed"
+            label={t("speed")}
             value={speed}
             min={0.1}
             max={5.0}
@@ -74,7 +76,7 @@ export const StickerSettingsSection: React.FC<StickerSettingsSectionProps> = ({ 
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-medium text-text-muted select-none flex items-center gap-1.5">
               <RefreshCw className={`w-3.5 h-3.5 ${loop ? "animate-spin-slow text-accent" : ""}`} />
-              Loop Animation
+              {t("loopAnimation")}
             </span>
             <button
               onClick={toggleLoop}
@@ -84,7 +86,7 @@ export const StickerSettingsSection: React.FC<StickerSettingsSectionProps> = ({ 
                   : "bg-surface-raised border border-border/60 text-text-muted hover:text-text-primary hover:bg-white/[0.04]"
               }`}
             >
-              {loop ? "Enabled" : "Disabled"}
+              {loop ? t("enabled") : t("disabled")}
             </button>
           </div>
         </div>

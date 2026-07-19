@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,12 +16,13 @@ export const PlaybackSpeedSelector: React.FC<PlaybackSpeedSelectorProps> = ({
   setSpeedMenuOpen,
   setSpeed,
 }) => {
+  const { t } = useTranslation("editor");
   return (
     <div className="relative">
       <button
         onClick={() => setSpeedMenuOpen(!speedMenuOpen)}
         className="flex items-center gap-1 px-2 h-6 rounded text-[10px] font-medium text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors cursor-pointer"
-        title="Playback speed"
+        title={t("playbackSpeed")}
         aria-expanded={speedMenuOpen}
       >
         <span className="max-w-18 truncate">{playbackSpeed}x</span>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Sparkles, MessageSquare, Loader2, CheckCircle2, AlertCircle, Cloud, CloudOff } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
@@ -58,6 +59,7 @@ const templateCategories = TEMPLATE_CATEGORIES.map((cat) =>
 );
 
 export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const [activeTab, setActiveTab] = useState<"effects" | "templates" | "yours" | "captions">("effects");
   const [activeCategory, setActiveCategory] = useState<string>("Lower Third");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -546,12 +548,12 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
               {isTemplatesLoading ? (
                 <div className="h-40 flex flex-col items-center justify-center gap-2 text-text-muted text-xs">
                   <Loader2 className="w-6 h-6 text-accent animate-spin" />
-                  <p className="font-semibold text-text-muted/80">Updating templates library...</p>
+                  <p className="font-semibold text-text-muted/80">{t("updatingTemplatesLibrary")}</p>
                 </div>
               ) : filteredTemplates.length === 0 ? (
                 <div className="h-40 flex flex-col items-center justify-center text-text-muted gap-1 text-xs">
-                  <p>No matching templates found</p>
-                  <p className="opacity-60">Try searching other categories</p>
+                  <p>{t("noMatchingTemplates")}</p>
+                  <p className="opacity-60">{t("trySearchingOtherCategories")}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-1.5">
@@ -569,29 +571,29 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
           <div className="p-4 bg-surface-raised/40 border border-border/50 rounded-xl space-y-4 text-xs">
             <div className="flex items-center gap-2">
               <MessageSquare className="w-5 h-5 text-accent animate-pulse" />
-              <h4 className="font-bold text-text-primary">Auto Caption Generator</h4>
+              <h4 className="font-bold text-text-primary">{t("autoCaptionGenerator")}</h4>
             </div>
-            <p className="text-text-muted leading-relaxed">Generate highly accurate captions automatically from the audio tracks in your project timeline. Powered by local speech recognition models.</p>
+            <p className="text-text-muted leading-relaxed">{t("autoCaptionDesc")}</p>
 
             {captioningState === "idle" && (
               <>
                 <div className="space-y-3 pt-2">
                   <div>
-                    <label className="text-[10px] font-semibold text-text-muted uppercase block mb-1">Language</label>
+                    <label className="text-[10px] font-semibold text-text-muted uppercase block mb-1">{t("language")}</label>
                     <select className="w-full bg-surface-raised border border-border rounded-md px-2.5 py-1.5 text-text-primary text-xs outline-none">
-                      <option value="en">English (US)</option>
-                      <option value="es">Español</option>
-                      <option value="fr">Français</option>
-                      <option value="de">Deutsch</option>
+                      <option value="en">{t("englishUS")}</option>
+                      <option value="es">{t("spanish")}</option>
+                      <option value="fr">{t("french")}</option>
+                      <option value="de">{t("german")}</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-semibold text-text-muted uppercase block mb-1">Filter gaps & silence</label>
+                    <label className="text-[10px] font-semibold text-text-muted uppercase block mb-1">{t("filterGapsSilence")}</label>
                     <div className="flex items-center gap-2 mt-1">
                       <input type="checkbox" id="filter-silence" defaultChecked className="rounded border-border accent-accent cursor-pointer" />
                       <label htmlFor="filter-silence" className="text-text-muted cursor-pointer">
-                        Automatically skip silent audio blocks
+                        {t("autoSkipSilence")}
                       </label>
                     </div>
                   </div>
@@ -600,12 +602,12 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
                 {!hasAudioOrVideoClips ? (
                   <div className="flex items-start gap-2 p-2.5 bg-yellow-500/10 border border-yellow-500/25 rounded-lg text-yellow-200 mt-4 leading-normal">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                    <span>No audio or video clips found on the timeline. Drag some media onto the timeline first to transcribe them.</span>
+                    <span>{t("noAudioVideoClips")}</span>
                   </div>
                 ) : (
                   <Button className="w-full py-2 bg-accent hover:bg-accent/80 text-white font-semibold flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(108,99,255,0.2)] rounded-lg active:scale-[0.98] transition-all cursor-pointer mt-4" onClick={startCaptioning}>
                     <Sparkles className="w-4 h-4" />
-                    Start Captioning
+                    {t("startCaptioning")}
                   </Button>
                 )}
               </>
@@ -616,12 +618,12 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
                 <Loader2 className="w-8 h-8 text-accent animate-spin" />
                 <div className="text-center space-y-1.5">
                   <div className="font-semibold text-text-primary">
-                    {captioningState === "analyzing" && "Analyzing Audio Timeline..."}
-                    {captioningState === "transcribing" && "Transcribing Speech (Whisper Offline)..."}
-                    {captioningState === "aligning" && "Aligning Word Timestamps..."}
-                    {captioningState === "stitching" && "Stitching Subtitle Track..."}
+                    {captioningState === "analyzing" && t("analyzingAudio")}
+                    {captioningState === "transcribing" && t("transcribingSpeech")}
+                    {captioningState === "aligning" && t("aligningTimestamps")}
+                    {captioningState === "stitching" && t("stitchingSubtitles")}
                   </div>
-                  <div className="text-[10px] text-text-muted">Please keep Clypra open. This process runs locally.</div>
+                  <div className="text-[10px] text-text-muted">{t("keepClypraOpen")}</div>
                 </div>
 
                 {/* Progress bar */}
@@ -636,13 +638,13 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
               <div className="space-y-4 pt-3 flex flex-col items-center">
                 <CheckCircle2 className="w-8 h-8 text-green-500 animate-bounce" />
                 <div className="text-center space-y-1">
-                  <div className="font-bold text-text-primary">Captions Generated Successfully!</div>
+                  <div className="font-bold text-text-primary">{t("captionsGenerated")}</div>
                   <div className="text-[11px] text-text-muted leading-relaxed">
-                    Created <span className="font-semibold text-accent-soft">{captionsCount} styled subtitle segments</span> perfectly aligned with your active timeline.
+                    {t("captionsGeneratedDesc", {count: captionsCount})}
                   </div>
                 </div>
                 <Button className="w-full py-2 bg-surface-raised hover:bg-surface-raised/80 text-text-primary border border-border rounded-lg active:scale-[0.98] transition-all cursor-pointer mt-4" onClick={() => setCaptioningState("idle")}>
-                  Caption Again
+                  {t("captionAgain")}
                 </Button>
               </div>
             )}

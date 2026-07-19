@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Type, Layout, Sparkles, Film, Music, Image, FileText, Clock, Shuffle, Smile } from "lucide-react";
 import { useUIStore } from "@/store/uiStore";
 import { useTimelineStore } from "@/store/timelineStore";
@@ -46,33 +47,34 @@ export function buildClipPropertyTransform(clip: Clip, updates: Record<string, u
 
 /** Clip type display info */
 function getClipTypeInfo(assetType: string | undefined, clipKind: Clip["kind"] | undefined, isText: boolean, isSticker?: boolean) {
-  if (isText) return { icon: FileText, label: "Text", color: "text-purple-400" };
-  if (isSticker) return { icon: Smile, label: "Sticker", color: "text-pink-400" };
-  if (clipKind === "filter") return { icon: Sparkles, label: "Filter", color: "text-violet-400" };
-  if (clipKind === "video-effect") return { icon: Sparkles, label: "Video Effect", color: "text-violet-400" };
-  if (clipKind === "body-effect") return { icon: Sparkles, label: "Body Effect", color: "text-violet-400" };
-  if (clipKind === "animated-overlay") return { icon: Sparkles, label: "Animated Overlay", color: "text-violet-400" };
+  if (isText) return { icon: FileText, labelKey: "text", color: "text-purple-400" };
+  if (isSticker) return { icon: Smile, labelKey: "sticker", color: "text-pink-400" };
+  if (clipKind === "filter") return { icon: Sparkles, labelKey: "filter", color: "text-violet-400" };
+  if (clipKind === "video-effect") return { icon: Sparkles, labelKey: "videoEffect", color: "text-violet-400" };
+  if (clipKind === "body-effect") return { icon: Sparkles, labelKey: "bodyEffect", color: "text-violet-400" };
+  if (clipKind === "animated-overlay") return { icon: Sparkles, labelKey: "animatedOverlay", color: "text-violet-400" };
   switch (assetType) {
     case "video":
-      return { icon: Film, label: "Video", color: "text-blue-400" };
+      return { icon: Film, labelKey: "video", color: "text-blue-400" };
     case "audio":
-      return { icon: Music, label: "Audio", color: "text-green-400" };
+      return { icon: Music, labelKey: "audio", color: "text-green-400" };
     case "image":
-      return { icon: Image, label: "Image", color: "text-amber-400" };
+      return { icon: Image, labelKey: "image", color: "text-amber-400" };
     default:
-      return { icon: Film, label: "Clip", color: "text-text-muted" };
+      return { icon: Film, labelKey: "clip", color: "text-text-muted" };
   }
 }
 
 type TextPropertyTab = "text" | "animation" | "transform";
 
 const TEXT_TABS: { id: TextPropertyTab; label: string; icon: React.FC<{ className?: string }> }[] = [
-  { id: "text", label: "Text Style", icon: Type },
-  { id: "animation", label: "Animation", icon: Sparkles },
-  { id: "transform", label: "Transform", icon: Layout },
+  { id: "text", labelKey: "textStyle", icon: Type },
+  { id: "animation", labelKey: "animation", icon: Sparkles },
+  { id: "transform", labelKey: "transform", icon: Layout },
 ];
 
 export const PropertiesPanel: React.FC = () => {
+  const { t } = useTranslation("editor");
   const { selectedClipIds, selectedTransitionId, clearSelection } = useUIStore();
   const { clips, transitions, updateTransition, removeTransition } = useTimelineStore();
   const { mediaAssets, project } = useProjectStore();
@@ -94,10 +96,10 @@ export const PropertiesPanel: React.FC = () => {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-semibold text-text-primary truncate">
-                {selectedTransition.type === "dissolve" ? "Dissolve" : "Fade"} Transition
+                {selectedTransition.type === "dissolve" ? t("dissolve") : t("fade")} {t("transition")}
               </p>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[9px] font-medium text-accent">Transition</span>
+                <span className="text-[9px] font-medium text-accent">{t("transition")}</span>
               </div>
             </div>
           </div>
@@ -208,7 +210,7 @@ export const PropertiesPanel: React.FC = () => {
   const effectiveAssetType = selectedAsset?.type ?? (selectedClip.kind === "audio" ? "audio" : undefined);
   const typeInfo = getClipTypeInfo(effectiveAssetType, selectedClip.kind, !!isTextClip, isSticker);
   const TypeIcon = typeInfo.icon;
-  const clipName = isTextClip ? (textClip.text || "Text").slice(0, 24) : isTimelineEffectClip ? (selectedClip.name || typeInfo.label) : selectedAsset?.name || (selectedClip as any)?.audioPath?.split("/").pop() || "Clip";
+  const clipName = isTextClip ? (textClip.text || t("text")).slice(0, 24) : isTimelineEffectClip ? (selectedClip.name || t(typeInfo.labelKey)) : selectedAsset?.name || (selectedClip as any)?.audioPath?.split("/").pop() || t("clip");
   const clipDuration = selectedClip.duration.toFixed(1);
 
   return (
@@ -222,7 +224,7 @@ export const PropertiesPanel: React.FC = () => {
           <div className="min-w-0 flex-1">
             <p className="text-xs font-semibold text-text-primary truncate">{clipName}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className={`text-[9px] font-medium ${typeInfo.color}`}>{typeInfo.label}</span>
+              <span className={`text-[9px] font-medium ${typeInfo.color}`}>{t(typeInfo.labelKey)}</span>
               <span className="text-[9px] text-text-muted/40">•</span>
               <span className="text-[9px] text-text-muted tabular-nums flex items-center gap-0.5">
                 <Clock className="w-2.5 h-2.5" />
@@ -242,7 +244,7 @@ export const PropertiesPanel: React.FC = () => {
                 <button key={tab.id} onClick={() => setActivePropertyTab(tab.id)} className={`flex-1 py-2 text-[10px] font-semibold tracking-wide text-center transition-all cursor-pointer border-b-2 ${isActive ? "text-accent border-accent bg-accent/[0.04]" : "text-text-muted border-transparent hover:text-text-primary hover:bg-white/[0.02]"}`}>
                   <span className="flex items-center justify-center gap-1.5">
                     <TabIcon className="w-3 h-3" />
-                    {tab.label}
+                    {t(tab.labelKey)}
                   </span>
                 </button>
               );

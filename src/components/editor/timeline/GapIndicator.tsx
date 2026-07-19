@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Lock, Trash2 } from "lucide-react";
 import { useUIStore } from "@/store/uiStore";
 import { GapManager } from "@/lib/timeline/gapManager";
@@ -23,6 +24,7 @@ interface GapIndicatorProps {
  * - Visual indicator for protected gaps
  */
 export const GapIndicator: React.FC<GapIndicatorProps> = ({ gap, pixelsPerSecond, selected = false, locked = false }) => {
+  const { t } = useTranslation("editor");
   const { selectGap } = useUIStore();
   const [isHovered, setIsHovered] = useState(false);
   const [showContextMenu, setShowContextMenu] = useState(false);
@@ -164,7 +166,7 @@ export const GapIndicator: React.FC<GapIndicatorProps> = ({ gap, pixelsPerSecond
         >
           <button className="w-full px-3 py-1.5 text-left text-sm hover:bg-surface-hover flex items-center gap-2" onClick={handleRemove} disabled={gap.protected}>
             <Trash2 size={14} />
-            <span>Remove Gap</span>
+            <span>{t("removeGap")}</span>
             <span className="ml-auto text-xs text-muted">,</span>
           </button>
 

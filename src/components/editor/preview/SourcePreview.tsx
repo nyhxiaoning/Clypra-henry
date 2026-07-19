@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, X, RotateCcw, Play, Loader2 } from "lucide-react";
 import { platform } from "@/core/platform";
 import { useUIStore } from "@/store/uiStore";
@@ -30,6 +31,7 @@ const isExternalOrDataUrl = (value: string) => value.startsWith("data:") || valu
 const USE_GPU_PREVIEW = false;
 
 export const SourcePreview: React.FC = () => {
+  const { t } = useTranslation("editor");
   const { sourceAsset, sourceTextPreset, sourceInPoint, sourceOutPoint, markSourceIn, markSourceOut } = useUIStore();
   const { exitSourceMode } = usePreviewMode();
   const { tracks, clips, addClip, addTrack, insertTrackAt, getTimelineEndTime } = useTimelineStore();
@@ -468,7 +470,7 @@ export const SourcePreview: React.FC = () => {
       {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-4 h-10 shrink-0 border-b border-border/50">
         <div className="flex items-baseline gap-2">
-          <span className="text-[13px] font-semibold text-text-primary tracking-tight">Previewing</span>
+          <span className="text-[13px] font-semibold text-text-primary tracking-tight">{t("previewing")}</span>
           <span className="text-[13px] text-text-muted">— {mediaLabel}</span>
         </div>
         <button
@@ -476,7 +478,7 @@ export const SourcePreview: React.FC = () => {
             exitSourceMode(); // Auto-switches transport context
           }}
           className="w-7 h-7 flex items-center justify-center rounded hover:bg-white/6 transition-colors text-text-muted hover:text-text-primary"
-          title="Close (Esc)"
+          title={t("close")}
         >
           <X className="w-4 h-4" />
         </button>
@@ -488,26 +490,26 @@ export const SourcePreview: React.FC = () => {
           <div className="flex items-center gap-4">
             {sourceInPoint !== null && (
               <div className="flex items-center gap-1.5">
-                <span className="text-text-muted">In:</span>
+                <span className="text-text-muted">{t("in")}</span>
                 <span className="font-mono text-accent">{formatTC(sourceInPoint)}</span>
               </div>
             )}
             {sourceOutPoint !== null && (
               <div className="flex items-center gap-1.5">
-                <span className="text-text-muted">Out:</span>
+                <span className="text-text-muted">{t("out")}</span>
                 <span className="font-mono text-accent">{formatTC(sourceOutPoint)}</span>
               </div>
             )}
             {hasCompleteMarks && markedDuration !== null && (
               <div className="flex items-center gap-1.5">
-                <span className="text-text-muted">Duration:</span>
+                <span className="text-text-muted">{t("durationLabel")}</span>
                 <span className="font-mono text-text-primary font-semibold">{markedDuration.toFixed(2)}s</span>
               </div>
             )}
           </div>
-          <button onClick={handleClearMarks} className="flex items-center gap-1 px-2 h-5 rounded text-[10px] font-medium text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors" title="Clear marks">
+          <button onClick={handleClearMarks} className="flex items-center gap-1 px-2 h-5 rounded text-[10px] font-medium text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors" title={t("clearMarks")}>
             <RotateCcw className="w-3 h-3" />
-            Clear
+            {t("clear")}
           </button>
         </div>
       )}
@@ -542,7 +544,7 @@ export const SourcePreview: React.FC = () => {
               ) : (
                 <div className="text-text-muted text-xs flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Loading preview...
+                  {t("loadingPreview")}
                 </div>
               )
             ) : (
@@ -558,10 +560,10 @@ export const SourcePreview: React.FC = () => {
 
       {sourceAsset.type === "text" ? (
         <div className="flex items-center justify-between h-10 px-4 shrink-0 border-t border-border/30 bg-surface/30">
-          <span className="text-[11px] text-text-muted font-medium select-none">Procedural Style Preview</span>
-          <button onClick={handleAddToTimeline} className="flex items-center gap-1.5 px-3 h-7 rounded text-[11px] font-semibold bg-accent hover:bg-accent-soft active:scale-95 text-white cursor-pointer transition-all duration-150 shadow-sm" title="Add text to timeline">
+          <span className="text-[11px] text-text-muted font-medium select-none">{t("proceduralStylePreview")}</span>
+          <button onClick={handleAddToTimeline} className="flex items-center gap-1.5 px-3 h-7 rounded text-[11px] font-semibold bg-accent hover:bg-accent-soft active:scale-95 text-white cursor-pointer transition-all duration-150 shadow-sm" title={t("addTextToTimeline")}>
             <Plus className="w-3.5 h-3.5" />
-            Add to Timeline
+            {t("addToTimeline")}
           </button>
         </div>
       ) : (
@@ -576,25 +578,25 @@ export const SourcePreview: React.FC = () => {
           outPoint={sourceOutPoint}
           rightActions={
             <>
-              <button onClick={handleMarkIn} className={`px-2 h-6 rounded text-[10px] font-medium transition-colors cursor-pointer ${sourceInPoint !== null && Math.abs(currentTime - sourceInPoint) < 0.1 ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-white/6"}`} title="Mark In (I)">
-                IN
+              <button onClick={handleMarkIn} className={`px-2 h-6 rounded text-[10px] font-medium transition-colors cursor-pointer ${sourceInPoint !== null && Math.abs(currentTime - sourceInPoint) < 0.1 ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-white/6"}`} title={t("markIn")}>
+                {t("inShort")}
               </button>
-              <button onClick={handleMarkOut} className={`px-2 h-6 rounded text-[10px] font-medium transition-colors cursor-pointer ${sourceOutPoint !== null && Math.abs(currentTime - sourceOutPoint) < 0.1 ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-white/6"}`} title="Mark Out (O)">
-                OUT
+              <button onClick={handleMarkOut} className={`px-2 h-6 rounded text-[10px] font-medium transition-colors cursor-pointer ${sourceOutPoint !== null && Math.abs(currentTime - sourceOutPoint) < 0.1 ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-white/6"}`} title={t("markOut")}>
+                {t("outShort")}
               </button>
               {hasCompleteMarks && (
-                <button onClick={handlePlayMarkedRegion} className="flex items-center gap-1 px-2 h-6 rounded text-[10px] font-medium text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors cursor-pointer" title="Play marked region">
+                <button onClick={handlePlayMarkedRegion} className="flex items-center gap-1 px-2 h-6 rounded text-[10px] font-medium text-text-muted hover:text-text-primary hover:bg-white/6 transition-colors cursor-pointer" title={t("playMarkedRegion")}>
                   <Play className="w-3 h-3" />
-                  Play
+                  {t("play")}
                 </button>
               )}
               <div className="w-px h-4 bg-white/10 mx-1" />
               {(() => {
                 const isAddEnabled = sourceAsset.type === "image" || hasCompleteMarks;
                 return (
-                  <button onClick={handleAddToTimeline} disabled={!isAddEnabled} className={`flex items-center gap-1 px-2.5 h-6 rounded text-[10px] font-semibold transition-all ${isAddEnabled ? "bg-accent hover:bg-accent-soft text-white cursor-pointer" : "bg-text-muted/70 hover:bg-text-muted/90 text-white cursor-not-allowed"}`} title={isAddEnabled ? (sourceAsset.type === "image" ? "Add to Timeline" : `Add ${markedDuration?.toFixed(2)}s to Timeline`) : "Add to Track"}>
+                  <button onClick={handleAddToTimeline} disabled={!isAddEnabled} className={`flex items-center gap-1 px-2.5 h-6 rounded text-[10px] font-semibold transition-all ${isAddEnabled ? "bg-accent hover:bg-accent-soft text-white cursor-pointer" : "bg-text-muted/70 hover:bg-text-muted/90 text-white cursor-not-allowed"}`} title={isAddEnabled ? (sourceAsset.type === "image" ? t("addToTimeline") : `${t("add")} ${markedDuration?.toFixed(2)}s`) : t("addToTimeline")}>
                     <Plus className="w-3 h-3" />
-                    Add
+                    {t("add")}
                   </button>
                 );
               })()}

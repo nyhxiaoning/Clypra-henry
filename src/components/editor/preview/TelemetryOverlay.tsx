@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export interface TelemetryStats {
   avgEvaluationTimeMs: number;
@@ -19,11 +20,12 @@ export const TelemetryOverlay: React.FC<TelemetryOverlayProps> = ({
   showTelemetry,
   telemetryStats,
 }) => {
+  const { t } = useTranslation("editor");
   if (!showTelemetry || !telemetryStats) return null;
 
   return (
     <div className="absolute top-4 left-4 z-20 bg-black/80 backdrop-blur-sm rounded-lg p-3 text-xs font-mono text-white/90 space-y-1 border border-white/10">
-      <div className="font-semibold text-accent mb-2">Render Telemetry</div>
+      <div className="font-semibold text-accent mb-2">{t("renderTelemetry")}</div>
       <div className="flex justify-between gap-4">
         <span className="text-white/60">Eval:</span>
         <span>{telemetryStats.avgEvaluationTimeMs.toFixed(2)}ms</span>

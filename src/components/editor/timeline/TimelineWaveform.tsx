@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { platform } from "@/core/platform";
 import { drawProfessionalWaveform, getThemeAccentRgb } from "@/lib/utils/canvasUtils";
 import type { WaveformBucket } from "@/types";
@@ -65,6 +66,7 @@ function subscribeToThemeChanges(listener: ThemeListener): () => void {
 }
 
 export const TimelineWaveform: React.FC<TimelineWaveformProps> = ({ audioPath, clipWidthPx, duration, trimIn = 0, trimOut, className = "" }) => {
+  const { t } = useTranslation("editor");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [waveformData, setWaveformData] = useState<WaveformBucket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -240,7 +242,7 @@ export const TimelineWaveform: React.FC<TimelineWaveformProps> = ({ audioPath, c
   }, [waveformData, themeRevision, validClipWidth]);
 
   if (hasError) {
-    return <div className={`w-full h-full rounded-[2px] border border-border/30 bg-surface-raised/30 ${className}`} title="Waveform unavailable" />;
+    return <div className={`w-full h-full rounded-[2px] border border-border/30 bg-surface-raised/30 ${className}`} title={t("waveformUnavailable")} />;
   }
 
   return (

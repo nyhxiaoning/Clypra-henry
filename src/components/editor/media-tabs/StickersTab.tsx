@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Smile, Loader2, Sparkles, AlertCircle, Plus, Download } from "lucide-react";
 import { NetworkError } from "@/components/ui/NetworkError";
 import { useStickersStore } from "@/features/stickers/store/stickersStore";
@@ -9,6 +10,7 @@ import { STICKER_CATEGORIES, StickersApi, type StickerCategory, type StickerItem
 import { platform } from "@/core/platform";
 
 export const StickersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<StickerCategory>("emoji");
   const [stickers, setStickers] = useState<StickerItem[]>([]);
@@ -122,8 +124,8 @@ export const StickersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         {!loading && !error && filteredStickers.length === 0 && (
           <div className="rounded-lg border border-border bg-surface-raised/40 p-4 text-center">
             <Smile className="mx-auto mb-2 h-5 w-5 text-text-muted" />
-            <p className="text-xs font-semibold text-text-primary">No stickers found</p>
-            <p className="mt-1 text-[11px] leading-relaxed text-text-muted">Try a different search or category</p>
+            <p className="text-xs font-semibold text-text-primary">{t("noStickersFound")}</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-text-muted">{t("tryDifferentSearch")}</p>
           </div>
         )}
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 // @ts-ignore - react-dnd types issue
 import { useDrop } from "react-dnd";
 import { handleCreateTrackAndDrop } from "@/lib/timeline/timelineUtils";

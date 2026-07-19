@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus, Download, Upload, Trash2, Play, AlertCircle, Sparkles, Settings } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useTimelineStore, getInsertIndexForNewTrack } from "@/store/timelineStore";
@@ -14,6 +15,7 @@ import type { TabProps } from "./types";
 import type { TextClip } from "@/types";
 
 export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const { clips, tracks, addClip, removeClip, updateClip, withBatch } = useTimelineStore();
   const { project } = useProjectStore();
   const { seek } = useTransportControls();
@@ -318,12 +320,12 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
       if (totalCaptions > 0) {
         setErrorMsg(null);
       } else {
-        setErrorMsg("No captions were generated. Please check your audio contains speech.");
+        setErrorMsg(t("noCaptionsGenerated"));
       }
     } catch (error: any) {
       console.error(`[CaptionsTab] Top-level error:`, error);
       console.error(`[CaptionsTab] Error stack:`, error.stack);
-      setErrorMsg(error.message || "Failed to generate captions.");
+      setErrorMsg(error.message || t("failedToGenerateCaptions"));
     } finally {
       setIsGenerating(false);
     }

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Music, Smile, Wand2, MessageSquare, Filter, Shuffle } from "lucide-react";
 import { MediaTab, AudioTab, TextTab, StickersTab, FiltersTab, TransitionsTab, CaptionsTab, type TabType, MediaTabProps } from "../media-tabs";
 import { EffectsPanel } from "@/features/video-effects/components/EffectsPanel";
 import { TextIcon, YouTubeIcon } from "../../ui/icons";
 
 export const EnhancedMediaPanel: React.FC<MediaTabProps> = ({ onAddToTimeline, initialTab = "media" }) => {
+  const { t } = useTranslation("editor");
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
 
   React.useEffect(() => {
@@ -12,14 +14,14 @@ export const EnhancedMediaPanel: React.FC<MediaTabProps> = ({ onAddToTimeline, i
   }, [initialTab]);
 
   const tabs = [
-    { id: "media" as const, icon: YouTubeIcon, label: "Media" },
-    { id: "audio" as const, icon: Music, label: "Audio" },
-    { id: "text" as const, icon: TextIcon, label: "Text" },
-    { id: "stickers" as const, icon: Smile, label: "Stickers" },
-    { id: "effects" as const, icon: Wand2, label: "Effects" },
-    { id: "filters" as const, icon: Filter, label: "Filters" },
-    { id: "transitions" as const, icon: Shuffle, label: "Transitions" },
-    { id: "captions" as const, icon: MessageSquare, label: "Captions" },
+    { id: "media" as const, icon: YouTubeIcon, labelKey: "media" },
+    { id: "audio" as const, icon: Music, labelKey: "audio" },
+    { id: "text" as const, icon: TextIcon, labelKey: "text" },
+    { id: "stickers" as const, icon: Smile, labelKey: "sticker" },
+    { id: "effects" as const, icon: Wand2, labelKey: "videoEffect" },
+    { id: "filters" as const, icon: Filter, labelKey: "filter" },
+    { id: "transitions" as const, icon: Shuffle, labelKey: "transition" },
+    { id: "captions" as const, icon: MessageSquare, labelKey: "captions" },
   ];
 
   return (
@@ -39,7 +41,7 @@ export const EnhancedMediaPanel: React.FC<MediaTabProps> = ({ onAddToTimeline, i
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center flex-col gap-0.5 px-2 py-1 text-[10px] font-medium transition-colors whitespace-nowrap cursor-pointer hover:text-accent ${activeTab === tab.id ? "text-accent" : "text-text-muted"}`}>
                 <Icon size={14} />
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             );
           })}

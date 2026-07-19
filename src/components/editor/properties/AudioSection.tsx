@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Volume2, VolumeX, AudioLines } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Clip } from "@/types";
 import { PropertySlider } from "./primitives/PropertySlider";
 import { PropertySection } from "./primitives/PropertySection";
@@ -10,6 +11,7 @@ interface AudioSectionProps {
 }
 
 export const AudioSection: React.FC<AudioSectionProps> = ({ selectedClip, handleUpdate }) => {
+  const { t } = useTranslation("editor");
   const volume = selectedClip.volume ?? 1.0;
   const volumePercent = Math.round(Math.max(0, Math.min(1, volume)) * 100);
   const isMuted = volume === 0;
@@ -43,7 +45,7 @@ export const AudioSection: React.FC<AudioSectionProps> = ({ selectedClip, handle
   return (
     <div className="space-y-3">
       {/* Volume Section */}
-      <PropertySection title="Volume" icon={<Volume2 className="w-3.5 h-3.5" />}>
+      <PropertySection title={t("volume")} icon={<Volume2 className="w-3.5 h-3.5" />}>
         <div className="space-y-3">
           {/* Mute toggle + slider */}
           <div className="flex items-center gap-2.5">
@@ -54,13 +56,13 @@ export const AudioSection: React.FC<AudioSectionProps> = ({ selectedClip, handle
                   ? "bg-red-500/15 text-red-400 hover:bg-red-500/25"
                   : "bg-surface-raised hover:bg-white/[0.06] text-accent"
               }`}
-              title={isMuted ? "Unmute" : "Mute"}
+              title={isMuted ? t("unmute") : t("mute")}
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
             </button>
             <div className="flex-1">
               <PropertySlider
-                label="Level"
+                label={t("level")}
                 value={volumePercent}
                 min={0}
                 max={100}
@@ -96,10 +98,10 @@ export const AudioSection: React.FC<AudioSectionProps> = ({ selectedClip, handle
       </PropertySection>
 
       {/* Fade Section */}
-      <PropertySection title="Fade" icon={<AudioLines className="w-3.5 h-3.5" />} defaultCollapsed>
+      <PropertySection title={t("fade")} icon={<AudioLines className="w-3.5 h-3.5" />} defaultCollapsed>
         <div className="space-y-2.5">
           <PropertySlider
-            label="Fade In"
+            label={t("fadeIn")}
             value={fadeIn}
             min={0}
             max={maxFadeSeconds}
@@ -108,7 +110,7 @@ export const AudioSection: React.FC<AudioSectionProps> = ({ selectedClip, handle
             onChange={(v) => handleUpdate("fadeIn", clampFade(v))}
           />
           <PropertySlider
-            label="Fade Out"
+            label={t("fadeOut")}
             value={fadeOut}
             min={0}
             max={maxFadeSeconds}

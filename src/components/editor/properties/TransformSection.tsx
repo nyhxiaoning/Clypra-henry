@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Move, Timer, RotateCcw, FlipHorizontal2, FlipVertical2, Lock, Unlock, Crosshair } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Clip } from "@/types";
 import { type ClipFitModeExtended } from "@/lib/timeline/timelineClip";
 import { PropertySlider } from "./primitives/PropertySlider";
@@ -16,14 +17,6 @@ interface TransformSectionProps {
   canvasHeight?: number;
 }
 
-const FIT_OPTIONS = [
-  { value: "contain", label: "Contain" },
-  { value: "cover", label: "Cover" },
-  { value: "fill", label: "Fill" },
-  { value: "stretch", label: "Stretch" },
-  { value: "original", label: "Original" },
-];
-
 function getOpacityPercent(opacity: number): number {
   const value = Number.isFinite(opacity) ? opacity : 1;
   const normalized = value > 1 ? value / 100 : value;
@@ -31,6 +24,14 @@ function getOpacityPercent(opacity: number): number {
 }
 
 export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip, isVisualClip, handleUpdate, handleUpdateMultiple, handleApplyFit, canvasWidth = 1920, canvasHeight = 1080 }) => {
+  const { t } = useTranslation("editor");
+  const FIT_OPTIONS = [
+    { value: "contain", label: t("contain") },
+    { value: "cover", label: t("cover") },
+    { value: "fill", label: t("fill") },
+    { value: "stretch", label: t("stretch") },
+    { value: "original", label: t("original") },
+  ];
   const isAspectLocked = selectedClip.aspectRatioLocked ?? true;
   const aspectRatio = selectedClip.sourceAspectRatio ?? (selectedClip.width && selectedClip.height ? Math.abs(selectedClip.width) / Math.abs(selectedClip.height) : 16 / 9);
   const isFlippedH = selectedClip.width < 0;
@@ -81,7 +82,7 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
   return (
     <div className="space-y-3">
       {/* Transform Section */}
-      <PropertySection title="Transform" icon={<Move className="w-3.5 h-3.5" />}>
+      <PropertySection title={t("transform")} icon={<Move className="w-3.5 h-3.5" />}>
         <div className="space-y-3">
           {/* Conform Mode (visual clips only) */}
           {isVisualClip && (
@@ -89,12 +90,12 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
               <div className="flex items-end gap-2">
                 <div className="flex-1">
                   <PropertySelect
-                    label="Conform Mode"
+                    label={t("conformMode")}
                     value={selectedClip.conform?.mode ?? "fit"}
                     options={[
-                      { value: "fit", label: "Fit" },
-                      { value: "fill", label: "Fill" },
-                      { value: "none", label: "None" },
+                      { value: "fit", label: t("fit") },
+                      { value: "fill", label: t("fill") },
+                      { value: "none", label: t("none") },
                     ]}
                     onChange={(v) => {
                       const existing = selectedClip.conform || {
@@ -123,13 +124,13 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
                   }}
                   className="px-2.5 py-1.5 text-[10px] font-medium bg-surface-raised border border-border/60 rounded-md text-text-muted hover:text-text-primary hover:bg-white/[0.06] transition-all active:scale-[0.97] cursor-pointer"
                 >
-                  Reset
+                  {t("reset")}
                 </button>
               </div>
 
               {/* Conform Scale Slider */}
               <PropertySlider
-                label="Conform Scale"
+                label={t("conformScale")}
                 value={Math.round((selectedClip.conform?.userScale ?? 1) * 100)}
                 min={0}
                 max={400}
@@ -150,7 +151,7 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
 
               {/* Conform Offset X Slider */}
               <PropertySlider
-                label="Conform Offset X"
+                label={t("conformOffsetX")}
                 value={Math.round(selectedClip.conform?.userOffsetX ?? 0)}
                 min={-1000}
                 max={1000}
@@ -171,7 +172,7 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
 
               {/* Conform Offset Y Slider */}
               <PropertySlider
-                label="Conform Offset Y"
+                label={t("conformOffsetY")}
                 value={Math.round(selectedClip.conform?.userOffsetY ?? 0)}
                 min={-1000}
                 max={1000}
@@ -195,10 +196,10 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
           {/* Position: X / Y */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-medium text-text-muted select-none">Position</span>
-              <button onClick={handleCenterOnCanvas} className="flex items-center gap-1 px-1.5 py-0.5 text-[9px] text-text-muted hover:text-accent hover:bg-accent/10 rounded transition-all cursor-pointer" title="Center on canvas">
+              <span className="text-[10px] font-medium text-text-muted select-none">{t("position")}</span>
+              <button onClick={handleCenterOnCanvas} className="flex items-center gap-1 px-1.5 py-0.5 text-[9px] text-text-muted hover:text-accent hover:bg-accent/10 rounded transition-all cursor-pointer" title={t("centerOnCanvas")}>
                 <Crosshair className="w-3 h-3" />
-                Center
+                {t("center")}
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -216,10 +217,10 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
           {/* Size: W / H + Aspect Lock */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-medium text-text-muted select-none">Size</span>
-              <button onClick={() => handleUpdate("aspectRatioLocked", !isAspectLocked)} className={`flex items-center gap-1 px-1.5 py-0.5 text-[9px] rounded transition-all cursor-pointer ${isAspectLocked ? "text-accent bg-accent/10" : "text-text-muted hover:text-text-primary hover:bg-white/[0.04]"}`} title={isAspectLocked ? "Unlock aspect ratio" : "Lock aspect ratio"}>
+              <span className="text-[10px] font-medium text-text-muted select-none">{t("size")}</span>
+              <button onClick={() => handleUpdate("aspectRatioLocked", !isAspectLocked)} className={`flex items-center gap-1 px-1.5 py-0.5 text-[9px] rounded transition-all cursor-pointer ${isAspectLocked ? "text-accent bg-accent/10" : "text-text-muted hover:text-text-primary hover:bg-white/[0.04]"}`} title={isAspectLocked ? t("unlockAspectRatio") : t("lockAspectRatio")}>
                 {isAspectLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-                {isAspectLocked ? "Locked" : "Free"}
+                {isAspectLocked ? t("locked") : t("free")}
               </button>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -237,29 +238,29 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
           {/* Rotation */}
           <div className="flex items-end gap-2">
             <div className="flex-1">
-              <PropertySlider label="Rotation" value={selectedClip.rotation} min={-180} max={180} step={1} suffix="°" onChange={(v) => handleUpdate("rotation", v)} />
+              <PropertySlider label={t("rotation")} value={selectedClip.rotation} min={-180} max={180} step={1} suffix="°" onChange={(v) => handleUpdate("rotation", v)} />
             </div>
             {selectedClip.rotation !== 0 && (
-              <button onClick={() => handleUpdate("rotation", 0)} className="p-1 text-text-muted hover:text-accent hover:bg-accent/10 rounded transition-all cursor-pointer mb-0.5" title="Reset rotation">
+              <button onClick={() => handleUpdate("rotation", 0)} className="p-1 text-text-muted hover:text-accent hover:bg-accent/10 rounded transition-all cursor-pointer mb-0.5" title={t("resetRotation")}>
                 <RotateCcw className="w-3 h-3" />
               </button>
             )}
           </div>
 
           {/* Opacity */}
-          <PropertySlider label="Opacity" value={opacityPercent} min={0} max={100} step={1} suffix="%" onChange={(v) => handleUpdate("opacity", v / 100)} />
+          <PropertySlider label={t("opacity")} value={opacityPercent} min={0} max={100} step={1} suffix="%" onChange={(v) => handleUpdate("opacity", v / 100)} />
 
           {/* Flip buttons */}
           <div>
-            <span className="text-[10px] font-medium text-text-muted select-none block mb-1.5">Flip</span>
+            <span className="text-[10px] font-medium text-text-muted select-none block mb-1.5">{t("flip")}</span>
             <div className="flex gap-2">
-              <button onClick={() => handleUpdate("width", -selectedClip.width)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-medium rounded-md border transition-all cursor-pointer ${isFlippedH ? "bg-accent/15 text-accent border-accent/30" : "bg-surface-raised text-text-muted border-border/60 hover:text-text-primary hover:bg-white/[0.06]"}`} title="Flip Horizontal">
+              <button onClick={() => handleUpdate("width", -selectedClip.width)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-medium rounded-md border transition-all cursor-pointer ${isFlippedH ? "bg-accent/15 text-accent border-accent/30" : "bg-surface-raised text-text-muted border-border/60 hover:text-text-primary hover:bg-white/[0.06]"}`} title={t("flipHorizontal")}>
                 <FlipHorizontal2 className="w-3.5 h-3.5" />
-                Horizontal
+                {t("horizontal")}
               </button>
-              <button onClick={() => handleUpdate("height", -selectedClip.height)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-medium rounded-md border transition-all cursor-pointer ${isFlippedV ? "bg-accent/15 text-accent border-accent/30" : "bg-surface-raised text-text-muted border-border/60 hover:text-text-primary hover:bg-white/[0.06]"}`} title="Flip Vertical">
+              <button onClick={() => handleUpdate("height", -selectedClip.height)} className={`flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-medium rounded-md border transition-all cursor-pointer ${isFlippedV ? "bg-accent/15 text-accent border-accent/30" : "bg-surface-raised text-text-muted border-border/60 hover:text-text-primary hover:bg-white/[0.06]"}`} title={t("flipVertical")}>
                 <FlipVertical2 className="w-3.5 h-3.5" />
-                Vertical
+                {t("vertical")}
               </button>
             </div>
           </div>
@@ -267,10 +268,10 @@ export const TransformSection: React.FC<TransformSectionProps> = ({ selectedClip
       </PropertySection>
 
       {/* Timing Section */}
-      <PropertySection title="Timing" icon={<Timer className="w-3.5 h-3.5" />} defaultCollapsed>
+      <PropertySection title={t("timing")} icon={<Timer className="w-3.5 h-3.5" />} defaultCollapsed>
         <div className="space-y-2.5">
-          <PropertySlider label="Trim In" value={selectedClip.trimIn} min={0} max={Math.max(selectedClip.trimOut - 0.1, 0)} step={0.01} suffix="s" onChange={(v) => handleUpdate("trimIn", v)} />
-          <PropertySlider label="Trim Out" value={selectedClip.trimOut} min={selectedClip.trimIn + 0.1} max={selectedClip.trimIn + selectedClip.duration + 30} step={0.01} suffix="s" onChange={(v) => handleUpdate("trimOut", v)} />
+          <PropertySlider label={t("trimIn")} value={selectedClip.trimIn} min={0} max={Math.max(selectedClip.trimOut - 0.1, 0)} step={0.01} suffix="s" onChange={(v) => handleUpdate("trimIn", v)} />
+          <PropertySlider label={t("trimOut")} value={selectedClip.trimOut} min={selectedClip.trimIn + 0.1} max={selectedClip.trimIn + selectedClip.duration + 30} step={0.01} suffix="s" onChange={(v) => handleUpdate("trimOut", v)} />
         </div>
       </PropertySection>
     </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Sparkles, Scissors, RefreshCw, AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import type { TextEffectDefinition } from "@/features/text-effects/types/types";
 
@@ -18,8 +19,9 @@ export const EffectStylePanel: React.FC<EffectStylePanelProps> = ({
   onChangeEffect,
   isModified,
 }) => {
+  const { t } = useTranslation("editor");
   const effectName = effectDefinition?.name || effectId.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-  const effectCategory = effectDefinition?.category || "Custom";
+  const effectCategory = effectDefinition?.category || t("custom");
 
   return (
     <div className="space-y-3 mb-4">
@@ -33,7 +35,7 @@ export const EffectStylePanel: React.FC<EffectStylePanelProps> = ({
               {effectName}
             </div>
             <div className="text-[10px] text-zinc-400 capitalize">
-              {effectCategory} Effect
+              {t("textEffect")}
             </div>
           </div>
         </div>
@@ -41,7 +43,7 @@ export const EffectStylePanel: React.FC<EffectStylePanelProps> = ({
         <div className="flex items-center gap-1.5">
           <button
             onClick={onChangeEffect}
-            title="Change Text Effect"
+            title={t("changeTextEffect")}
             className="p-1.5 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-all duration-150 flex items-center justify-center"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -49,7 +51,7 @@ export const EffectStylePanel: React.FC<EffectStylePanelProps> = ({
           
           <button
             onClick={onDetach}
-            title="Detach Effect (Keep current styles)"
+            title={t("detachEffect")}
             className="p-1.5 rounded hover:bg-red-500/10 text-zinc-400 hover:text-red-400 transition-all duration-150 flex items-center justify-center"
           >
             <Scissors className="w-3.5 h-3.5" />
@@ -61,7 +63,7 @@ export const EffectStylePanel: React.FC<EffectStylePanelProps> = ({
         <div className="flex items-start gap-2 p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-md text-[11px] text-amber-400 select-none">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
           <span>
-            Tip: Editing typography or colors below will detach from the preset effect.
+            {t("detachEffectTip")}
           </span>
         </div>
       )}

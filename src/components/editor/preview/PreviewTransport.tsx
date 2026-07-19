@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Play, Pause, SkipBack, SkipForward } from "lucide-react";
 
 interface PreviewTransportProps {
@@ -28,6 +29,7 @@ interface PreviewTransportProps {
 }
 
 export const PreviewTransport: React.FC<PreviewTransportProps> = ({ currentTime, duration, isPlaying, onPlayPause, onSeek, formatTime, inPoint, outPoint, onStepBack, onStepForward, leftActions, rightActions, disabled = false }) => {
+  const { t } = useTranslation("editor");
   const scrubRef = useRef<HTMLDivElement>(null);
   const [isScrubbing, setIsScrubbing] = useState(false);
 
@@ -100,15 +102,15 @@ export const PreviewTransport: React.FC<PreviewTransportProps> = ({ currentTime,
         {/* Center play controls */}
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1">
           {onStepBack && (
-            <button onClick={disabled ? undefined : onStepBack} disabled={disabled} className={`w-7 h-7 flex items-center justify-center rounded transition-colors cursor-pointer ${disabled ? "cursor-not-allowed text-text-muted/50" : "hover:bg-white/6 text-text-muted hover:text-text-primary"}`} title={disabled ? "No clips on timeline" : "Previous frame"} aria-label="Previous frame">
+            <button onClick={disabled ? undefined : onStepBack} disabled={disabled} className={`w-7 h-7 flex items-center justify-center rounded transition-colors cursor-pointer ${disabled ? "cursor-not-allowed text-text-muted/50" : "hover:bg-white/6 text-text-muted hover:text-text-primary"}`} title={disabled ? t("noClipsOnTimeline") : t("previousFrame")} aria-label={t("previousFrame")}>
               <SkipBack className="w-3.5 h-3.5" />
             </button>
           )}
-          <button onClick={disabled ? undefined : onPlayPause} disabled={disabled} className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer mx-1 ${disabled ? "cursor-not-allowed text-text-muted/50" : "hover:bg-white/6 text-text-primary"}`} title={disabled ? "No clips on timeline" : isPlaying ? "Pause" : "Play"} aria-label={isPlaying ? "Pause playback" : "Play playback"}>
+          <button onClick={disabled ? undefined : onPlayPause} disabled={disabled} className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer mx-1 ${disabled ? "cursor-not-allowed text-text-muted/50" : "hover:bg-white/6 text-text-primary"}`} title={disabled ? t("noClipsOnTimeline") : isPlaying ? t("pause") : t("play")} aria-label={isPlaying ? t("pausePlayback") : t("playPlayback")}>
             {isPlaying ? <Pause className="w-[18px] h-[18px]" /> : <Play className="w-[18px] h-[18px] ml-0.5" />}
           </button>
           {onStepForward && (
-            <button onClick={disabled ? undefined : onStepForward} disabled={disabled} className={`w-7 h-7 flex items-center justify-center rounded transition-colors cursor-pointer ${disabled ? "cursor-not-allowed text-text-muted/50" : "hover:bg-white/6 text-text-muted hover:text-text-primary"}`} title={disabled ? "No clips on timeline" : "Next frame"} aria-label="Next frame">
+            <button onClick={disabled ? undefined : onStepForward} disabled={disabled} className={`w-7 h-7 flex items-center justify-center rounded transition-colors cursor-pointer ${disabled ? "cursor-not-allowed text-text-muted/50" : "hover:bg-white/6 text-text-muted hover:text-text-primary"}`} title={disabled ? t("noClipsOnTimeline") : t("nextFrame")} aria-label={t("nextFrame")}>
               <SkipForward className="w-3.5 h-3.5" />
             </button>
           )}

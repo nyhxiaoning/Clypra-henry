@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { RotateCcw, Keyboard, Search, AlertTriangle, Check } from "lucide-react";
 import { useShortcutStore, formatBinding, getShortcutCategories, type KeyBinding } from "@/store/shortcutStore";
 
@@ -28,6 +29,7 @@ interface CaptureInputProps {
 }
 
 function CaptureInput({ onCapture, onCancel }: CaptureInputProps) {
+  const { t } = useTranslation("settings");
   const [captured, setCaptured] = useState<KeyBinding | null>(null);
 
   const handleKeyDown = useCallback(
@@ -67,7 +69,7 @@ function CaptureInput({ onCapture, onCancel }: CaptureInputProps) {
       onKeyDown={handleKeyDown}
       onBlur={onCancel}
       value={captured ? formatBinding(captured) : ""}
-      placeholder="Press a key..."
+      placeholder={t("pressKey")}
       className="w-full px-2 py-1 text-[11px] font-mono rounded-md bg-accent/10 border border-accent/50 text-accent placeholder:text-accent/50 focus:outline-none focus:border-accent text-center cursor-pointer"
     />
   );
@@ -100,6 +102,7 @@ function ShortcutRow({
   onCapture,
   onCancelEdit,
 }: ShortcutRowProps) {
+  const { t } = useTranslation("settings");
   const isModified = formatBinding(binding) !== formatBinding(defaultBinding);
 
   return (
@@ -111,7 +114,7 @@ function ShortcutRow({
         {conflictWith && (
           <span className="flex items-center gap-0.5 text-[9px] text-amber-400">
             <AlertTriangle className="w-2.5 h-2.5" />
-            conflict
+            {t("conflict")}
           </span>
         )}
       </div>
@@ -128,13 +131,13 @@ function ShortcutRow({
           <button
             onClick={() => onEdit(id)}
             className="group relative"
-            title="Click to rebind"
+            title={t("clickToRebind")}
           >
             <span className="group-hover:opacity-0 transition-opacity">
               <KeyChip binding={binding} />
             </span>
             <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-accent font-medium">
-              Edit
+              {t("edit")}
             </span>
           </button>
         )}
@@ -142,7 +145,7 @@ function ShortcutRow({
         <button
           onClick={() => onReset(id)}
           disabled={!isModified}
-          title="Reset to default"
+          title={t("resetToDefault")}
           className={`p-1 rounded transition-colors ${isModified ? "text-text-muted hover:text-accent cursor-pointer" : "text-white/10 cursor-default"}`}
         >
           <RotateCcw className="w-3 h-3" />
@@ -155,6 +158,7 @@ function ShortcutRow({
 // ─── Main Component ────────────────────────────────────────────────────────
 
 export function KeyboardShortcutsSettings() {
+  const { t } = useTranslation("settings");
   const { shortcuts, setShortcut, resetShortcut, resetAll } = useShortcutStore();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -212,7 +216,9 @@ export function KeyboardShortcutsSettings() {
     const actionsInCat = Object.values(shortcuts).filter(
       (a) =>
         a.category === cat &&
-        (!searchQuery || a.label.toLowerCase().includes(searchQuery.toLowerCase()))
+        (!searchQuery ||
+          a.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          t("shortcutLabels." + a.id, a.label).toLowerCase().includes(searchQuery.toLowerCase()))
     );
     return actionsInCat.length > 0;
   });
@@ -226,23 +232,23 @@ export function KeyboardShortcutsSettings() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-[11px] text-text-muted leading-relaxed max-w-xs">
-          Click any binding to rebind it. Press <kbd className="px-1 py-0.5 text-[10px] bg-surface-raised border border-white/10 rounded">Esc</kbd> to cancel.
+          {t("clickAnyBindingToRebind")} <kbd className="px-1 py-0.5 text-[10px] bg-surface-raised border border-white/10 rounded">Esc</kbd> {t("cancel").toLowerCase()}.
         </p>
 
         {showResetConfirm ? (
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-text-muted">Reset all?</span>
+            <span className="text-[11px] text-text-muted">{t("resetAllConfirm")}</span>
             <button
               onClick={handleResetAll}
               className="px-2.5 py-1 text-[11px] font-semibold rounded-md bg-danger/15 text-danger border border-danger/30 hover:bg-danger/25 transition-colors"
             >
-              Confirm
+              {t("confirm")}
             </button>
             <button
               onClick={() => setShowResetConfirm(false)}
               className="px-2.5 py-1 text-[11px] font-medium rounded-md bg-surface-raised border border-white/6 text-text-muted hover:text-text-primary transition-colors"
             >
-              Cancel
+              {t("cancel")}
             </button>
           </div>
         ) : (
@@ -252,7 +258,7 @@ export function KeyboardShortcutsSettings() {
             className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-colors ${hasAnyModified ? "bg-surface-raised border border-white/6 text-text-muted hover:text-danger hover:border-danger/40 cursor-pointer" : "bg-surface border border-white/4 text-white/20 cursor-default"}`}
           >
             <RotateCcw className="w-3 h-3" />
-            Reset All
+            {t("resetAll")}
           </button>
         )}
       </div>
@@ -262,7 +268,7 @@ export function KeyboardShortcutsSettings() {
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" />
         <input
           type="text"
-          placeholder="Search shortcuts..."
+          placeholder={t("searchShortcuts")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-8 pr-3 py-2 text-[12px] rounded-lg bg-surface-raised border border-white/6 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/40"
@@ -272,26 +278,28 @@ export function KeyboardShortcutsSettings() {
       {/* Shortcut list by category */}
       <div className="space-y-5 max-h-[420px] overflow-y-auto pr-1 scrollbar-thin">
         {filteredCategories.length === 0 && (
-          <p className="text-center text-[12px] text-text-muted py-8">No shortcuts match "{searchQuery}"</p>
+          <p className="text-center text-[12px] text-text-muted py-8">{t("noShortcutsMatch", { query: searchQuery })}</p>
         )}
         {filteredCategories.map((category) => {
           const actionsInCat = Object.values(shortcuts).filter(
             (a) =>
               a.category === category &&
-              (!searchQuery || a.label.toLowerCase().includes(searchQuery.toLowerCase()))
+              (!searchQuery ||
+                a.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                t("shortcutLabels." + a.id, a.label).toLowerCase().includes(searchQuery.toLowerCase()))
           );
 
           return (
             <section key={category}>
               <h4 className="text-[10px] font-semibold uppercase tracking-wider text-text-muted mb-1.5 px-2">
-                {category}
+                {t("shortcutCategories." + category, category)}
               </h4>
               <div className="space-y-0.5">
                 {actionsInCat.map((action) => (
                   <ShortcutRow
                     key={action.id}
                     id={action.id}
-                    label={action.label}
+                    label={t("shortcutLabels." + action.id, action.label)}
                     binding={action.binding}
                     defaultBinding={action.defaultBinding}
                     conflictWith={conflictMap[action.id] ?? null}
