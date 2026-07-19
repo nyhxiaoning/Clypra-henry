@@ -11,6 +11,7 @@ interface GhostTrackProps {
 }
 
 export const GhostTrack: React.FC<GhostTrackProps> = ({ insertIndex, isDragging }) => {
+  const { t } = useTranslation("editor");
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ["MEDIA_ASSET"], // Only accept media assets, not clips
@@ -32,7 +33,7 @@ export const GhostTrack: React.FC<GhostTrackProps> = ({ insertIndex, isDragging 
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-accent rounded-full pointer-events-none">
           {/* Dot at left edge */}
           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-accent" />
-          <span className="absolute left-4 -top-3 text-accent text-[10px] bg-timeline-ghost-track-bg px-1 rounded whitespace-nowrap">New track</span>
+          <span className="absolute left-4 -top-3 text-accent text-[10px] bg-timeline-ghost-track-bg px-1 rounded whitespace-nowrap">{t("newTrack")}</span>
         </div>
       )}
     </div>

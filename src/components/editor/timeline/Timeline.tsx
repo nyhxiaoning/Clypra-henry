@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useTimelineStore } from "@/store/timelineStore";
 import { useUIStore } from "@/store/uiStore";
 import { useHistoryStore } from "@/store/historyStore";
@@ -27,6 +28,7 @@ const traceSelect = (...args: unknown[]) => {
 };
 
 export const Timeline: React.FC = () => {
+  const { t } = useTranslation("editor");
   const { tracks, clips, pixelsPerSecond, scrollLeft, setScrollLeft, getTimelineEndTime, setViewportWidth, snapGuides } = useTimelineStore();
   const hasClips = clips.length > 0;
 
@@ -391,7 +393,7 @@ export const Timeline: React.FC = () => {
                 borderRight: "1px solid var(--color-timeline-track-border)",
               }}
             >
-              <span className="text-[11px] font-semibold tracking-wide text-timeline-track-label uppercase">Track</span>
+              <span className="text-[11px] font-semibold tracking-wide text-timeline-track-label uppercase">{t("track")}</span>
             </div>
           )}
 

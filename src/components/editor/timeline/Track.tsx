@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react";
 import { useDrop } from "react-dnd";
 import { useUIStore } from "@/store/uiStore";
@@ -31,6 +32,7 @@ interface TrackProps {
 }
 
 const TrackInner: React.FC<TrackProps> = ({ track, pixelsPerSecond, clips, onClipDragStart, onClipDragMove, onClipDragEnd, dragState }) => {
+  const { t } = useTranslation("editor");
   const selectedClipIds = useUIStore((s) => s.selectedClipIds);
   const selectedGapId = useUIStore((s) => s.selectedGapId);
   const selectedTrackId = useUIStore((s) => s.selectedTrackId);
@@ -235,7 +237,7 @@ const TrackInner: React.FC<TrackProps> = ({ track, pixelsPerSecond, clips, onCli
         <div className="pointer-events-none absolute inset-0 z-40 bg-[repeating-linear-gradient(135deg,rgba(148,163,184,0.08)_0px,rgba(148,163,184,0.08)_8px,rgba(15,23,42,0.08)_8px,rgba(15,23,42,0.08)_16px)]">
           <div className="absolute right-2 top-2 inline-flex items-center gap-1 rounded bg-slate-900/70 px-2 py-1 text-[10px] font-medium text-slate-200">
             <Lock className="h-3 w-3" />
-            <span>Locked</span>
+            <span>{t("locked")}</span>
           </div>
         </div>
       )}

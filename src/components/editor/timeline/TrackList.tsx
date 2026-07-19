@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useTimelineStore } from "@/store/timelineStore";
 import { TrackLabel } from "./TrackLabel";
 
@@ -13,20 +14,21 @@ interface TrackListProps {
 }
 
 export const TrackList: React.FC<TrackListProps> = ({ trackListRef }) => {
+  const { t } = useTranslation("editor");
   const { tracks } = useTimelineStore();
 
   return (
     <div ref={trackListRef} className="w-40 border-r border-timeline-track-border flex flex-col bg-timeline-track-bg overflow-hidden">
       {/* Header */}
       <div className="h-6 px-3 border-b border-timeline-track-border flex items-center shrink-0 panel-head bg-timeline-track-bg">
-        <span className="text-[11px] font-semibold tracking-wide text-timeline-track-label uppercase">Track</span>
+        <span className="text-[11px] font-semibold tracking-wide text-timeline-track-label uppercase">{t("track")}</span>
       </div>
 
       {/* Track labels */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {tracks.length === 0 ? (
           <div className="flex-1 flex items-center justify-center px-3">
-            <span className="text-[10px] text-text-muted/40 text-center">No tracks</span>
+            <span className="text-[10px] text-text-muted/40 text-center">{t("noTracks")}</span>
           </div>
         ) : (
           tracks.map((track) => <TrackLabel key={track.id} track={track} />)

@@ -67,7 +67,7 @@ function getClipTypeInfo(assetType: string | undefined, clipKind: Clip["kind"] |
 
 type TextPropertyTab = "text" | "animation" | "transform";
 
-const TEXT_TABS: { id: TextPropertyTab; label: string; icon: React.FC<{ className?: string }> }[] = [
+const TEXT_TABS: { id: TextPropertyTab; labelKey: string; icon: React.FC<{ className?: string }> }[] = [
   { id: "text", labelKey: "textStyle", icon: Type },
   { id: "animation", labelKey: "animation", icon: Sparkles },
   { id: "transform", labelKey: "transform", icon: Layout },
