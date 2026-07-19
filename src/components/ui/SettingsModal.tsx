@@ -368,6 +368,7 @@ function AppearanceTab() {
 
 // ─── Editor Tab ──────────────────────────────────────────────────────────
 function EditorTab() {
+  const { t } = useTranslation("settings");
   const { snapToGrid, autoSave, defaultFrameRate, setSnapToGrid, setAutoSave, setDefaultFrameRate } = useSettingsStore();
   const { snapEnabled, toggleSnapEnabled } = useTimelineStore();
   const { project, updateProject } = useProjectStore();
@@ -745,8 +746,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 </p>
               </div>
             ) : (
-              <WhisperSettings />
-              <div className="mt-4">
+              <>
+                <WhisperSettings />
+                <div className="mt-4">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-2">App language</p>
                 <select
                   value={language}
@@ -764,6 +766,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                   ))}
                 </select>
               </div>
+              </>
             )
           )}
           {activeTab === "cache" && <CacheSettings />}

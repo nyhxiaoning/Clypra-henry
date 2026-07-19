@@ -42,10 +42,10 @@ const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onProjectOpen }) => {
   const { t } = useTranslation("launch");
   const { recentProjects, setRecentProjects, deleteProject, renameProject } = useProjectStore();
-  const [projectTot("common.delete", { defaultValue: "Delete" }), setProjectTot("common.delete", { defaultValue: "Delete" })] = useState<Project | null>(null);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [projectTot("common.rename", { defaultValue: "Rename" }), setProjectTot("common.rename", { defaultValue: "Rename" })] = useState<Project | null>(null);
-  const [renameValue, sett("common.rename", { defaultValue: "Rename" })Value] = useState("");
+  const [projectToRename, setProjectToRename] = useState<Project | null>(null);
+  const [renameValue, setRenameValue] = useState("");
   const [isRenaming, setIsRenaming] = useState(false);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
@@ -309,25 +309,25 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
     onProjectCreate(t("untitledProject"), "16:9", defaultFrameRate);
   };
 
-  const handlet("common.delete", { defaultValue: "Delete" })Click = (e: React.MouseEvent, project: Project) => {
+  const handleDeleteClick = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
     setMenuOpen(null);
-    setProjectTot("common.delete", { defaultValue: "Delete" })(project);
+    setProjectToDelete(project);
   };
 
-  const handlet("common.rename", { defaultValue: "Rename" })Click = (e: React.MouseEvent, project: Project) => {
+  const handleRenameClick = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
     setMenuOpen(null);
-    setProjectTot("common.rename", { defaultValue: "Rename" })(project);
-    sett("common.rename", { defaultValue: "Rename" })Value(project.name);
+    setProjectToRename(project);
+    setRenameValue(project.name);
   };
 
-  const handleConfirmt("common.rename", { defaultValue: "Rename" }) = async () => {
-    if (!projectTot("common.rename", { defaultValue: "Rename" }) || !renameValue.trim()) return;
+  const handleConfirmRename = async () => {
+    if (!projectToRename || !renameValue.trim()) return;
     setIsRenaming(true);
     try {
-      await renameProject(projectTot("common.rename", { defaultValue: "Rename" }).id, renameValue.trim());
-      setProjectTot("common.rename", { defaultValue: "Rename" })(null);
+      await renameProject(projectToRename.id, renameValue.trim());
+      setProjectToRename(null);
     } catch (error) {
       console.error("Failed to rename project:", error);
     } finally {
@@ -352,12 +352,12 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
-  const handleConfirmt("common.delete", { defaultValue: "Delete" }) = async () => {
-    if (!projectTot("common.delete", { defaultValue: "Delete" })) return;
+  const handleConfirmDelete = async () => {
+    if (!projectToDelete) return;
     setIsDeleting(true);
     try {
-      await deleteProject(projectTot("common.delete", { defaultValue: "Delete" }).id);
-      setProjectTot("common.delete", { defaultValue: "Delete" })(null);
+      await deleteProject(projectToDelete.id);
+      setProjectToDelete(null);
     } catch (error) {
       console.error("Failed to delete project:", error);
     } finally {
@@ -424,11 +424,11 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon-sm" onClick={() => setShowDiagnosticsModal(true)} title="t("launch.performanceDiagnostics")" style={{ WebkitAppRegion: "no-drag", cursor: "pointer" } as React.CSSProperties} className={diagnosticsEnabled.performance || diagnosticsEnabled.projectLoad || diagnosticsEnabled.textRender || diagnosticsEnabled.timelinePerf || diagnosticsEnabled.textTemplate ? "text-accent" : ""}>
+            <Button variant="ghost" size="icon-sm" onClick={() => setShowDiagnosticsModal(true)} title={t("launch.performanceDiagnostics")} style={{ WebkitAppRegion: "no-drag", cursor: "pointer" } as React.CSSProperties} className={diagnosticsEnabled.performance || diagnosticsEnabled.projectLoad || diagnosticsEnabled.textRender || diagnosticsEnabled.timelinePerf || diagnosticsEnabled.textTemplate ? "text-accent" : ""}>
               <Activity className="w-3.5 h-3.5" />
             </Button>
 
-            <Button variant="ghost" size="icon-sm" onClick={toggleSettingsModal} title="Settings" style={{ WebkitAppRegion: "no-drag", cursor: "pointer" } as React.CSSProperties}>
+            <Button variant="ghost" size="icon-sm" onClick={toggleSettingsModal} title={t("common.settings")} style={{ WebkitAppRegion: "no-drag", cursor: "pointer" } as React.CSSProperties}>
               <Settings className="w-3.5 h-3.5" />
             </Button>
           </div>
@@ -541,20 +541,20 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
 
                     {/* More options button */}
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div onClick={(e) => handleToggleMenu(e, project.id)} className="p-1.5 rounded-lg bg-bg/80 backdrop-blur-sm border border-white/4 hover:bg-surface-raised hover:border-white/8 cursor-pointer transition-colors" title="More options">
+                      <div onClick={(e) => handleToggleMenu(e, project.id)} className="p-1.5 rounded-lg bg-bg/80 backdrop-blur-sm border border-white/4 hover:bg-surface-raised hover:border-white/8 cursor-pointer transition-colors" title={t("common.moreOptions")}>
                         <MoreHorizontal className="w-3.5 h-3.5 text-text-muted" />
                       </div>
 
                       {/* Dropdown menu */}
                       {menuOpen === project.id && (
                         <div ref={menuRef} className="absolute top-full right-0 mt-1 z-50 min-w-[140px] rounded-lg border border-border bg-surface py-1 shadow-xl overflow-hidden">
-                          <button onClick={(e) => handlet("common.rename", { defaultValue: "Rename" })Click(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-text-primary hover:bg-surface-raised transition-colors cursor-pointer">
+                          <button onClick={(e) => handleRenameClick(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-text-primary hover:bg-surface-raised transition-colors cursor-pointer">
                             <Pencil className="w-3.5 h-3.5" />
-                            t("common.rename", { defaultValue: "Rename" })
+                            {t("common.rename")}
                           </button>
-                          <button onClick={(e) => handlet("common.delete", { defaultValue: "Delete" })Click(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-danger hover:bg-surface-raised transition-colors cursor-pointer">
+                          <button onClick={(e) => handleDeleteClick(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-danger hover:bg-surface-raised transition-colors cursor-pointer">
                             <Trash2 className="w-3.5 h-3.5" />
-                            t("common.delete", { defaultValue: "Delete" })
+                            {t("common.delete")}
                           </button>
                         </div>
                       )}
@@ -567,20 +567,20 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
         </section>
       </div>
 
-      {/* t("common.rename", { defaultValue: "Rename" }) Modal */}
-      <Modal isOpen={!!projectTot("common.rename", { defaultValue: "Rename" })} onClose={() => setProjectTot("common.rename", { defaultValue: "Rename" })(null)} title={t("common.renameProject", { defaultValue: "t("common.renameProject", { defaultValue: "t("common.rename", { defaultValue: "Rename" }) Project" })" })}>
+      {/* Rename Modal */}
+      <Modal isOpen={!!projectToRename} onClose={() => setProjectToRename(null)} title={t("common.renameProject")}>
         <div className="p-5 space-y-4">
           <div>
             <input
               type="text"
               value={renameValue}
-              onChange={(e) => sett("common.rename", { defaultValue: "Rename" })Value(e.target.value)}
+              onChange={(e) => setRenameValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") handleConfirmt("common.rename", { defaultValue: "Rename" })();
+                if (e.key === "Enter") handleConfirmRename();
               }}
               autoFocus
               className="w-full px-3 py-2 rounded-lg bg-bg border border-border text-sm text-text-primary focus:outline-none focus:border-accent transition-colors"
-              placeholder={t("common.projectName", { defaultValue: "t("common.projectName", { defaultValue: "Project name" })" })}
+              placeholder={t("common.projectName")}
             />
             <div className="flex justify-end mt-1">
               <span className={`text-[10px] font-medium ${countGraphemes(renameValue) > MAX_PROJECT_NAME_LENGTH ? "text-danger" : "text-text-muted/60"}`}>
@@ -589,30 +589,30 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
             </div>
           </div>
           <div className="flex gap-3 justify-end pt-2">
-            <Button variant="ghost" onClick={() => setProjectTot("common.rename", { defaultValue: "Rename" })(null)} disabled={isRenaming}>
+            <Button variant="ghost" onClick={() => setProjectToRename(null)} disabled={isRenaming}>
               {t("common.cancel")}
             </Button>
-            <Button variant="default" onClick={handleConfirmt("common.rename", { defaultValue: "Rename" })} disabled={isRenaming || !renameValue.trim() || countGraphemes(renameValue) > MAX_PROJECT_NAME_LENGTH}>
-              {isRenaming ? t("common.renaming", { defaultValue: "t("common.renaming", { defaultValue: "Renaming..." })" }) : t("common.rename", { defaultValue: "t("common.rename", { defaultValue: "Rename" })" })}
+            <Button variant="default" onClick={handleConfirmRename} disabled={isRenaming || !renameValue.trim() || countGraphemes(renameValue) > MAX_PROJECT_NAME_LENGTH}>
+              {isRenaming ? t("common.renaming") : t("common.rename")}
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* t("common.delete", { defaultValue: "Delete" }) Confirmation Modal */}
-      <Modal isOpen={!!projectTot("common.delete", { defaultValue: "Delete" })} onClose={() => setProjectTot("common.delete", { defaultValue: "Delete" })(null)} title={t("common.deleteProject", { defaultValue: "t("common.deleteProject", { defaultValue: "t("common.delete", { defaultValue: "Delete" }) Project" })" })}>
+      {/* Delete Confirmation Modal */}
+      <Modal isOpen={!!projectToDelete} onClose={() => setProjectToDelete(null)} title={t("common.deleteProject")}>
         <div className="p-5 space-y-4">
           <p className="text-sm text-text-primary">
-            {t("common.deleteConfirm", { defaultValue: "t("common.deleteConfirm", { defaultValue: "Are you sure you want to delete {{name}}?", name: projectToDelete?.name }) {{name}}?", name: projectTot("common.delete", { defaultValue: "Delete" })?.name })}
+            {t("common.deleteConfirm", { name: projectToDelete?.name ?? "" })}
           </p>
-          <p className="text-xs text-text-muted">{t("common.deleteWarning", { defaultValue: "t("common.deleteWarning", { defaultValue: "This action cannot be undone. All project data will be permanently deleted." })" })}</p>
+          <p className="text-xs text-text-muted">{t("common.deleteWarning")}</p>
 
           <div className="flex gap-3 justify-end pt-2">
-            <Button variant="secondary" className="cursor-pointer" onClick={() => setProjectTot("common.delete", { defaultValue: "Delete" })(null)} disabled={isDeleting}>
+            <Button variant="secondary" className="cursor-pointer" onClick={() => setProjectToDelete(null)} disabled={isDeleting}>
               {t("common.cancel")}
             </Button>
-            <Button variant="default" onClick={handleConfirmt("common.delete", { defaultValue: "Delete" })} disabled={isDeleting} className="bg-danger hover:bg-danger/80 cursor-pointer">
-              {isDeleting ? t("common.deleting", { defaultValue: "t("common.deleting", { defaultValue: "Deleting..." })" }) : t("common.delete", { defaultValue: "t("common.delete", { defaultValue: "Delete" })" })}
+            <Button variant="default" onClick={handleConfirmDelete} disabled={isDeleting} className="bg-danger hover:bg-danger/80 cursor-pointer">
+              {isDeleting ? t("common.deleting") : t("common.delete")}
             </Button>
           </div>
         </div>
@@ -711,7 +711,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500/15 border border-red-500/30">
                   <Video className="w-4 h-4 text-red-400" />
                 </span>
-                t("recordScreenCamera")
+                {t("launch.recordScreenCamera")}
               </h3>
               <button
                 onClick={closeRecordModal}
@@ -729,8 +729,8 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#07070c] border border-white/5">
                   <div className="flex flex-col items-center justify-center text-slate-500 gap-2">
                     <span className="text-4xl">🖥️</span>
-                    <span className="text-xs font-semibold text-slate-400">Screen Capture Enabled</span>
-                    <span className="text-[10px] text-slate-500">System picker will prompt when recording starts</span>
+                    <span className="text-xs font-semibold text-slate-400">{t("launch.screenCaptureEnabled")}</span>
+                    <span className="text-[10px] text-slate-500">{t("launch.systemPickerWillPrompt")}</span>
                   </div>
                 </div>
               )}
@@ -758,13 +758,13 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
               {!recordOptions.screen && !recordOptions.webcam && (
                 <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 gap-2">
                   <span className="text-3xl">🎙️</span>
-                  <span className="text-xs font-medium">Recording Audio Only</span>
+                  <span className="text-xs font-medium">{t("launch.recordingAudioOnly")}</span>
                 </div>
               )}
 
               {/* Camera notice banner */}
               {cameraNotice && (
-                <div className="absolute top-2 left-2 right-2 z-20 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] px-3 py-1.5 rounded-lg flex items-center justify-between backdrop-blur-sm">
+              <div className="absolute top-2 left-2 right-2 z-20 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] px-3 py-1.5 rounded-lg flex items-center justify-between backdrop-blur-sm">
                   <span>📷 {cameraNotice}</span>
                   <button onClick={() => setCameraNotice(null)} className="text-amber-400 hover:text-amber-200">✕</button>
                 </div>
@@ -822,16 +822,16 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
             {recordOptions.screen && !isRecording && (
               <div className="flex flex-col gap-3 p-4 rounded-xl bg-white/4 border border-white/8 text-slate-300">
                 <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Screen Capture Source
+                  {t("launch.screenCaptureSource")}
                 </div>
                 <select
                   value={recordOptions.screenType}
                   onChange={(e) => setRecordOptions({ ...recordOptions, screenType: e.target.value as any })}
                   className="w-full bg-[#0d0d15] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-accent/40 cursor-pointer"
                 >
-                  <option value="any">Standard System Picker (Let me choose)</option>
-                  <option value="entire">Prefer Entire Display</option>
-                  <option value="window">Prefer Application Window</option>
+                  <option value="any">{t("launch.standardSystemPicker")}</option>
+                  <option value="entire">{t("launch.preferEntireDisplay")}</option>
+                  <option value="window">{t("launch.preferApplicationWindow")}</option>
                 </select>
               </div>
             )}
@@ -840,8 +840,8 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
             {recordOptions.audio && !isRecording && (
               <div className="flex flex-col gap-3 p-4 rounded-xl bg-white/4 border border-white/8 text-slate-300">
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  <span>Microphone Source</span>
-                  {audioDevices.length > 0 && <span className="text-emerald-400 font-bold flex items-center gap-1.5 animate-pulse">● Live Testing</span>}
+                  <span>{t("launch.microphoneSource")}</span>
+                  {audioDevices.length > 0 && <span className="text-emerald-400 font-bold flex items-center gap-1.5 animate-pulse">● {t("launch.liveTesting")}</span>}
                 </div>
 
                 {audioDevices.length > 0 ? (
@@ -860,7 +860,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
 
                     {/* Live Meter */}
                     <div className="flex items-center gap-3">
-                      <span className="text-[11px] text-slate-400 font-medium">Input level:</span>
+                      <span className="text-[11px] text-slate-400 font-medium">{t("launch.inputLevel")}</span>
                       <div className="flex-1 h-2 rounded-full bg-[#07070a] overflow-hidden flex items-center p-0.5 border border-white/5">
                         <div
                           className="h-full rounded-full transition-all duration-75"
@@ -873,7 +873,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400">No microphone devices found.</p>
+                  <p className="text-xs text-slate-400">{t("launch.noMicrophoneDevices")}</p>
                 )}
               </div>
             )}
