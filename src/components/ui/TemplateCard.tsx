@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { TemplateDefinition } from "@/features/text-templates/types";
 import { Star, Download, Plus } from "lucide-react";
 import { TemplatePreviewPlayer, type TemplatePreviewPlayerHandle } from "@/features/text-templates";
@@ -24,6 +25,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   onApply,
   onPreview,
 }) => {
+  const { t } = useTranslation("editor");
   const lottieRef = useRef<TemplatePreviewPlayerHandle>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -65,7 +67,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
           <div className="flex flex-col items-center gap-2">
             <div className="w-8 h-8 rounded-full border-3 border-accent border-t-transparent animate-spin" />
-            <span className="text-[10px] font-semibold text-accent">Downloading...</span>
+            <span className="text-[10px] font-semibold text-accent">{t("downloading")}</span>
           </div>
         </div>
       )}
@@ -132,8 +134,8 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
             onApply(e);
           }}
           disabled={isDownloading}
-          title={isDownloaded ? "Add template to timeline" : "Download template"}
-          aria-label={isDownloaded ? "Add template to timeline" : "Download template"}
+          title={isDownloaded ? t("addTemplateToTimeline") : t("downloadTemplate")}
+          aria-label={isDownloaded ? t("addTemplateToTimeline") : t("downloadTemplate")}
           className={`w-4 h-4 rounded-full flex items-center justify-center transition-all relative ${
             isDownloaded
               ? "bg-accent hover:bg-accent/85 border border-accent text-white cursor-pointer"

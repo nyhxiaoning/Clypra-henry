@@ -31,7 +31,7 @@ export const AudioTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
       })
       .catch((err: unknown) => {
         if (!cancelled) {
-          const errorMessage = err instanceof Error ? err.message : "Failed to load audio library";
+          const errorMessage = err instanceof Error ? err.message : t("failedToLoadAudioLibrary");
           setError(errorMessage);
           // Detect network errors
           const isNetwork = errorMessage.toLowerCase().includes("network") || errorMessage.toLowerCase().includes("fetch") || errorMessage.toLowerCase().includes("connection") || errorMessage.toLowerCase().includes("offline");
@@ -61,22 +61,34 @@ export const AudioTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
   return (
     <>
       <div className="flex gap-1 overflow-x-auto scrollbar-none border-b border-border p-1" style={{ scrollbarWidth: "none" }}>
-        {AUDIO_LIBRARY_CATEGORIES.map((category) => (
-          <button key={category} onClick={() => setActiveCategory(category)} className={`shrink-0 cursor-pointer rounded px-2 py-1 text-[11px] font-semibold capitalize transition-colors ${activeCategory === category ? "bg-accent text-white" : "text-text-muted hover:bg-surface-raised hover:text-text-primary"}`}>
-            {category === "sfx" ? "SFX" : category}
-          </button>
-        ))}
+        {AUDIO_LIBRARY_CATEGORIES.map((category) => {
+          const categoryKeyMap: Record<string, string> = {
+            music: "catAudioMusic",
+            cinematic: "catAudioCinematic",
+            upbeat: "catAudioUpbeat",
+            "lo-fi": "catAudioLoFi",
+            "hip-hop": "catAudioHipHop",
+            ambient: "catAudioAmbient",
+            sfx: "catAudioSfx",
+          };
+          const labelKey = categoryKeyMap[category] || category;
+          return (
+            <button key={category} onClick={() => setActiveCategory(category)} className={`shrink-0 cursor-pointer rounded px-2 py-1 text-[11px] font-semibold capitalize transition-colors ${activeCategory === category ? "bg-accent text-white" : "text-text-muted hover:bg-surface-raised hover:text-text-primary"}`}>
+              {t(labelKey)}
+            </button>
+          );
+        })}
       </div>
 
       <div className="flex-1 overflow-y-auto scrollbar-thin p-1 space-y-2">
         {loading && (
           <div className="flex items-center justify-center gap-2 py-10 text-xs text-text-muted">
             <Loader2 className="h-4 w-4 animate-spin" />
-            Loading audio library
+            {t("loadingAudioLibrary")}
           </div>
         )}
 
-        {!loading && error && isNetworkError && <NetworkError message="No internet connection." onRetry={fetchAudio} />}
+        {!loading && error && isNetworkError && <NetworkError message={t("noInternetConnection")} onRetry={fetchAudio} />}
 
         {!loading && error && !isNetworkError && (
           <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-300 flex items-start gap-2">
@@ -112,6 +124,7 @@ interface AudioItemProps {
 }
 
 const AudioItem: React.FC<AudioItemProps> = ({ item, onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const [isPlaying, setIsPlaying] = useState(false);
   const [imageError, setImageError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -152,7 +165,7 @@ const AudioItem: React.FC<AudioItemProps> = ({ item, onAddToTimeline }) => {
       // Create MediaAsset from cached file
       const mediaAsset: MediaAsset = {
         id: `audio-library-${item.id}`,
-        name: item.name || "Library Audio",
+        name: item.name || t("libraryAudio"),
         path: absolutePath, // Use absolute path for media playback
         type: "audio",
         duration: cachedFile.metadata.duration || item.duration,
@@ -220,7 +233,7 @@ const AudioItem: React.FC<AudioItemProps> = ({ item, onAddToTimeline }) => {
             {isDownloadedFlag && !isDownloading && (
               <span className="flex items-center gap-1 text-[10px] text-green-400/80">
                 <CheckCircle className="w-3 h-3" />
-                Cached
+                {t("cached")}
               </span>
             )}
             {isDownloading && (
@@ -242,7 +255,7 @@ const AudioItem: React.FC<AudioItemProps> = ({ item, onAddToTimeline }) => {
             </button>
           </TooltipTrigger>
           <TooltipContent side="top">
-            <p>{isDownloadedFlag ? "Add to Timeline" : "Download & Add"}</p>
+            <p>{isDownloadedFlag ? t("addToTimeline") : t("downloadAndAdd")}</p>
           </TooltipContent>
         </Tooltip>
       </div>

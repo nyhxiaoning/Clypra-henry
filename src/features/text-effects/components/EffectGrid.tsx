@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useEffectsStore } from "../store/effectsStore";
 import { EffectCard } from "@/components/ui/EffectCard";
 import { TextEffectsApi, TEXT_EFFECT_CATEGORIES } from "../api/textEffectsApi";
@@ -15,6 +16,7 @@ interface EffectGridProps {
 }
 
 export function EffectGrid({ searchQuery = "", onAddToTimeline }: EffectGridProps) {
+  const { t } = useTranslation("editor");
   const [activeCategory, setActiveCategory] = useState("3d");
   const { index, indexLoading, indexError, loadCategory } = useEffectsStore();
 
@@ -181,7 +183,7 @@ export function EffectGrid({ searchQuery = "", onAddToTimeline }: EffectGridProp
         <div className="flex overflow-x-auto gap-0.5 p-1 whitespace-nowrap" style={{ scrollbarWidth: "none" }}>
           {CATEGORIES.map((cat) => (
             <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-2 py-1 capitalize text-[11px] font-medium rounded transition-colors cursor-pointer hover:bg-accent/10 hover:text-accent ${activeCategory === cat ? "bg-accent/10 text-accent" : "text-text-muted"}`}>
-              {cat}
+              {t("catTextEffect" + cat.charAt(0).toUpperCase() + cat.slice(1))}
             </button>
           ))}
         </div>
@@ -196,15 +198,15 @@ export function EffectGrid({ searchQuery = "", onAddToTimeline }: EffectGridProp
           <div className="flex flex-col items-center justify-center h-40 gap-2">
             <p className="text-sm text-text-muted">{indexError}</p>
             <button onClick={() => loadCategory(activeCategory)} className="text-xs text-accent underline cursor-pointer hover:text-accent-soft">
-              Retry
+              {t("retry")}
             </button>
           </div>
         )}
 
         {!indexLoading && !indexError && filteredItems.length === 0 && (
           <div className="flex flex-col items-center justify-center h-40 gap-1 text-xs text-text-muted">
-            <p>No matching effects found</p>
-            <p className="opacity-60">Try searching for other styles</p>
+            <p>{t("noMatchingEffectsEffect")}</p>
+            <p className="opacity-60">{t("trySearchingOtherStyles")}</p>
           </div>
         )}
 

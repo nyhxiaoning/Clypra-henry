@@ -115,7 +115,61 @@ npx tauri build --features tiny
 - 仍能看到不少 `TODO`、`@ts-ignore` 和临时注释，说明部分工程债尚未收敛
 - CI 只覆盖前端测试、Rust 测试和构建检查，缺少更系统的 UI 回归、 bundle/性能 或 i18n 覆盖
 
-## 7. 当前分析说明
+## 7. 关键帧、画中画、蒙版功能现状
+
+### 7.1 关键帧 (Keyframes)
+
+**现状：底层引擎已就绪，但无用户界面。**
+
+- 核心求值引擎位于 [src/core/evaluation/animation.ts](/Users/henryheng/Code/personCode/clypra/src/core/evaluation/animation.ts:1)，支持：
+  - 三次贝塞尔曲线插值（Newton-Raphson 数值求解）
+  - 缓动函数：linear / ease-in / ease-out / ease-in-out / cubic-bezier
+  - 数值插值与颜色插值（HEX、RGB、RGBA）
+- 求值器 [src/core/evaluation/evaluator.ts](/Users/henryheng/Code/personCode/clypra/src/core/evaluation/evaluator.ts:1) 中已预留 `clip.keyframes.x`、`clip.keyframes.y`、`clip.keyframes.opacity`、`clip.keyframes.rotation` 等接口
+- **但**：`Clip` 类型（[src/types/index.ts](/Users/henryheng/Code/personCode/clypra/src/types/index.ts:1)）中未声明 `keyframes` 字段，且**没有任何关键帧编辑器 UI**（无关键帧轨道、无贝塞尔曲线编辑器）
+- 特效强度 keyframes 数据结构已在 `ClipEffect` 和 `AppliedEffect` 类型中定义，但同样无 UI 可编辑
+- 相关类型定义：`Keyframe<T>`、`KeyframedProperty<T>`、`evaluateProperty()`
+
+### 7.2 画中画 (Picture-in-Picture)
+
+**现状：不支持时间线级别的画中画。**
+
+- 唯一的 PiP 实现位于 [src/components/ui/ScreenRecordingPreviewModal.tsx](/Users/henryheng/Code/personCode/clypra/src/components/ui/ScreenRecordingPreviewModal.tsx:1)，是屏幕录制的摄像头预览浮窗
+- 没有时间线叠加层轨道、没有 PiP 合成逻辑、没有 PiP 片段类型
+- **替代方案**：通过多轨道 + 画布定位（x/y/width/height）+ 透明度调节，可手动实现画中画效果
+
+### 7.3 蒙版 (Mask)
+
+**现状：不支持用户自定义蒙版。**
+
+- 仅存在**人体分割蒙版**（[src/features/body-effects/segmentation/](/Users/henryheng/Code/personCode/clypra/src/features/body-effects/segmentation/1)），基于 ONNX Runtime 和 MediaPipe，用于人体特效（发光/轮廓/粒子）
+- `EvaluatedMask` 类型（[src/core/evaluation/types.ts](/Users/henryheng/Code/personCode/clypra/src/core/evaluation/types.ts:1)）已定义（支持矩形/圆形/多边形），但标注为 `// Phase 3` 计划中
+- 合成器中有 `// TODO: Mask evaluation`（[src/core/compositor/resolver.ts](/Users/henryheng/Code/personCode/clypra/src/core/compositor/resolver.ts:1)）
+
+### 7.4 现有动画/过渡能力对比
+
+| 需求 | 当前状态 | 替代/相关功能 |
+|------|---------|-------------|
+| 片段位移动画 | 无关键帧 UI | 文字入场/退场动画（8 种预设 + 缓动） |
+| 透明度动画 | 无关键帧 UI | 音频 Fade In / Fade Out |
+| 缩放/旋转动画 | 无关键帧 UI | 静态 Transform 面板（x/y/w/h/rotation/opacity） |
+| 滤镜强度动画 | 数据结构已定义，无 UI | 静态滤镜强度滑块 |
+| 混合模式 | 14 种已定义，无 UI | 叠加层 blendMode 字段 |
+| 文字动画 | 完整实现 | 入场/退场各 8 种预设（fade/slide/scale/zoom） |
+| 多轨道叠加 | 支持 | 可手动实现画中画效果 |
+
+### 7.5 若需实现上述功能的关键文件
+
+| 功能 | 关键文件 | 需要新增/修改 |
+|------|---------|--------------|
+| 关键帧 UI | `src/components/editor/timeline/` | 关键帧轨道组件、贝塞尔曲线编辑器 |
+| 关键帧数据模型 | `src/types/index.ts` | 为 `Clip` 添加 `keyframes` 字段 |
+| 关键帧插值 | `src/core/evaluation/animation.ts` | 已有引擎，需对接 Clip 求值 |
+| 画中画 | `src/types/index.ts` + 合成器 | 叠加层轨道、画布定位 UI |
+| 蒙版 | `src/core/evaluation/types.ts` + 合成器 | 蒙版绘制工具、合成管线集成 |
+| 混合模式 UI | `src/components/editor/properties/` | 混合模式选择器 |
+
+## 8. 当前分析说明
 
 本文档作为后续国际化改造和新增模块的起点文档使用。
-若你要继续推进，可直接基于“模块化 `react-i18next` 方案”继续细化落地。
+若你要继续推进，可直接基于”模块化 `react-i18next` 方案”继续细化落地。

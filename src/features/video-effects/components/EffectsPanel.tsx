@@ -4,29 +4,12 @@
  */
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { EffectPicker } from "./EffectPicker";
 import { RendererEffectsBrowser } from "./RendererEffectsBrowser";
 import type { EffectPreset } from "../types";
 import type { EffectRenderer as EffectRendererType } from "@clypra-studio/engine";
 import type { TabType } from "@/components/editor/media-tabs/types";
-
-const VIDEO_EFFECT_CATEGORIES = [
-  { id: "essentials", name: "Essentials" },
-  { id: "glitch", name: "Glitch" },
-  { id: "retro", name: "Retro" },
-  { id: "light", name: "Light" },
-  { id: "motion", name: "Motion" },
-  { id: "color", name: "Color" },
-];
-
-const BODY_EFFECT_CATEGORIES = [
-  { id: "trending", name: "Trending" },
-  { id: "motion", name: "Motion" },
-  { id: "aura", name: "Aura" },
-  { id: "wings", name: "Wings" },
-  { id: "energy", name: "Energy" },
-  { id: "fun", name: "Fun" },
-];
 
 type EffectTab = "video" | "body";
 
@@ -35,8 +18,27 @@ export interface EffectsPanelProps {
 }
 
 export function EffectsPanel({ onAddToTimeline }: EffectsPanelProps) {
+  const { t } = useTranslation("editor");
   const [activeTab, setActiveTab] = useState<EffectTab>("video");
   const [selectedCategory, setSelectedCategory] = useState<string>("essentials");
+
+  const VIDEO_EFFECT_CATEGORIES = [
+    { id: "essentials", name: t("catEffectEssentials") },
+    { id: "glitch", name: t("catEffectGlitch") },
+    { id: "retro", name: t("catEffectRetro") },
+    { id: "light", name: t("catEffectLight") },
+    { id: "motion", name: t("catEffectMotion") },
+    { id: "color", name: t("catEffectColor") },
+  ];
+
+  const BODY_EFFECT_CATEGORIES = [
+    { id: "trending", name: t("catBodyTrending") },
+    { id: "motion", name: t("catBodyMotion") },
+    { id: "aura", name: t("catBodyAura") },
+    { id: "wings", name: t("catBodyWings") },
+    { id: "energy", name: t("catBodyEnergy") },
+    { id: "fun", name: t("catBodyFun") },
+  ];
 
   const handleTabChange = (tab: EffectTab) => {
     setActiveTab(tab);
@@ -65,10 +67,10 @@ export function EffectsPanel({ onAddToTimeline }: EffectsPanelProps) {
         {/* Video/Body Tabs */}
         <div className="flex items-center gap-2 shrink-0">
           <button onClick={() => handleTabChange("video")} className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all cursor-pointer ${activeTab === "video" ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-surface-raised/40"}`}>
-            Video
+            {t("videoEffect")}
           </button>
           <button onClick={() => handleTabChange("body")} className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all cursor-pointer ${activeTab === "body" ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-surface-raised/40"}`}>
-            Body
+            {t("bodyEffect")}
           </button>
         </div>
 

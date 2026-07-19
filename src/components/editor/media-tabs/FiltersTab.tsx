@@ -30,21 +30,20 @@ const FILTER_ICONS: Record<string, LucideIcon> = {
 
 const DEFAULT_ICON = Filter;
 
-const DEFAULT_FILTER_CATEGORIES = [
-  { id: "essentials", name: "Essentials" },
-  { id: "portrait", name: "Portrait" },
-  { id: "landscape", name: "Landscape" },
-  { id: "cinematic", name: "Cinematic" },
-  { id: "movies", name: "Movies" },
-  { id: "vintage", name: "Vintage" },
-  { id: "vibrant", name: "Vibrant" },
-  { id: "mono", name: "Mono" },
-  { id: "aesthetic", name: "Aesthetic" },
-  { id: "life", name: "Life" },
-];
-
 export const FiltersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
   const { t } = useTranslation("editor");
+  const DEFAULT_FILTER_CATEGORIES = [
+    { id: "essentials", name: t("catFilterEssentials") },
+    { id: "portrait", name: t("catFilterPortrait") },
+    { id: "landscape", name: t("catFilterLandscape") },
+    { id: "cinematic", name: t("catFilterCinematic") },
+    { id: "movies", name: t("catFilterMovies") },
+    { id: "vintage", name: t("catFilterVintage") },
+    { id: "vibrant", name: t("catFilterVibrant") },
+    { id: "mono", name: t("catFilterMono") },
+    { id: "aesthetic", name: t("catFilterAesthetic") },
+    { id: "life", name: t("catFilterLife") },
+  ];
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<FilterCategory>("essentials");
   const [categories, setCategories] = useState(DEFAULT_FILTER_CATEGORIES);
@@ -84,7 +83,7 @@ export const FiltersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         setFilters(data);
       } catch (err) {
         console.error(`[FiltersTab] Failed to load category ${activeCategory}:`, err);
-        setError(err instanceof Error ? err.message : "Failed to load filters");
+        setError(err instanceof Error ? err.message : t("failedToLoadFilters"));
       } finally {
         setLoading(false);
       }
@@ -232,10 +231,10 @@ const FilterCard: React.FC<FilterCardProps> = ({ filter, isFavorite, onFavorite,
       onAddToTimeline(e);
 
       // Show success feedback
-      useProjectStore.getState().showToast(`Added ${filter.name} filter`);
+      useProjectStore.getState().showToast(t("addedFilter", { name: filter.name }));
     } catch (error) {
       console.error("[FilterCard] Add to timeline failed:", error);
-      useProjectStore.getState().showToast("Failed to add filter", "error");
+      useProjectStore.getState().showToast(t("failedToAddFilter"), "error");
     } finally {
       setIsDownloading(false);
     }
@@ -265,7 +264,7 @@ const FilterCard: React.FC<FilterCardProps> = ({ filter, isFavorite, onFavorite,
         {previewSrc ? (
           <img
             src={previewSrc}
-            alt={`${filter.name} preview`}
+            alt={t("filterPreview", { name: filter.name })}
             className="w-full h-full object-cover rounded-lg"
             style={getCSSFilterStyle(filter.id)}
             loading="lazy"

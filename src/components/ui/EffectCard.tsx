@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Download, Star, Plus } from "lucide-react";
 import { renderTextEffect } from "@/features/text-effects/renderer";
 import type { TextEffectDefinition } from "@/features/text-effects/types/types";
@@ -14,6 +15,7 @@ interface EffectCardProps {
 }
 
 export const EffectCard: React.FC<EffectCardProps> = ({ effect, isFavorite, isDownloading, isDownloaded = false, onFavorite, onApply, onPreview }) => {
+  const { t } = useTranslation("editor");
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const canvasRef = useCallback((node: HTMLCanvasElement | null) => {
     setCanvas(node);
@@ -44,7 +46,7 @@ export const EffectCard: React.FC<EffectCardProps> = ({ effect, isFavorite, isDo
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
           <div className="flex flex-col items-center gap-2">
             <div className="w-8 h-8 rounded-full border-3 border-accent border-t-transparent animate-spin" />
-            <span className="text-[10px] font-semibold text-accent">Downloading...</span>
+            <span className="text-[10px] font-semibold text-accent">{t("downloading")}</span>
           </div>
         </div>
       )}
@@ -80,8 +82,8 @@ export const EffectCard: React.FC<EffectCardProps> = ({ effect, isFavorite, isDo
             onApply(e);
           }}
           disabled={isDownloading}
-          title={isDownloaded ? "Add text to timeline" : "Download and add text to timeline"}
-          aria-label={isDownloaded ? "Add text effect to timeline" : "Download and add text effect to timeline"}
+          title={isDownloaded ? t("addTextToTimeline") : t("downloadAndAddText")}
+          aria-label={isDownloaded ? t("addTextEffectToTimeline") : t("downloadAndAddTextEffect")}
           className={`w-4 h-4 rounded-full flex items-center justify-center transition-all relative ${isDownloaded ? "bg-accent hover:bg-accent/85 border border-accent text-white cursor-pointer" : isDownloading ? "bg-accent/20 border border-accent cursor-wait" : "bg-surface/40 hover:bg-surface/60 border border-border/50 text-text-muted hover:text-text-primary cursor-pointer"}`}
         >
           {isDownloading ? <div className="w-2 h-2 rounded-full border-2 border-accent border-t-transparent animate-spin" /> : isDownloaded ? <Plus className="w-3 h-3 group-hover:scale-110 transition-transform" /> : <Download className="w-2 h-2 group-hover:scale-115 transition-transform" />}

@@ -90,7 +90,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({ onAddToTimeline }) => {
           }
         } catch (error) {
           console.error(`[MediaTab] Failed to import ${filePath}:`, error);
-          useProjectStore.getState().showToast(`Failed to import ${filePath.split("/").pop() || "file"}`, "error");
+          useProjectStore.getState().showToast(t("failedToImport", { name: filePath.split("/").pop() || t("file") }), "error");
         }
       }
     },
@@ -108,7 +108,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({ onAddToTimeline }) => {
       <div className="p-1 border-b border-border">
         <Button variant="secondary" size="sm" className="w-full border-dashed cursor-pointer" onClick={importMedia} disabled={isLoading}>
           <CloudUpload className="w-4 h-4" />
-          {isLoading ? "Importing..." : "Import Media"}
+          {isLoading ? t("importing") : t("importMedia")}
         </Button>
       </div>
 
@@ -140,7 +140,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({ onAddToTimeline }) => {
           items={[
             usedMediaIds.has(contextMenu.mediaId)
               ? {
-                  label: "Remove from Timeline",
+                  label: t("removeFromTimeline"),
                   onClick: () => {
                     const { normalizeTrack, removeEmptyNonMainTracks, withBatch } = useTimelineStore.getState();
                     const { execute, beginTransaction, commitTransaction } = useHistoryStore.getState();
@@ -173,13 +173,13 @@ export const MediaTab: React.FC<MediaTabProps> = ({ onAddToTimeline }) => {
                   },
                 }
               : {
-                  label: "Add to Track",
+                  label: t("addToTrack"),
                   onClick: () => {
                     const asset = mediaAssets.find((a) => a.id === contextMenu.mediaId);
                     if (asset) onAddToTimeline?.(asset, "media");
                   },
                 },
-            { label: "Delete", onClick: () => removeMediaAsset(contextMenu.mediaId), danger: true },
+            { label: t("delete"), onClick: () => removeMediaAsset(contextMenu.mediaId), danger: true },
           ]}
           position={{ x: contextMenu.x, y: contextMenu.y }}
           onClose={() => setContextMenu(null)}

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { platform } from "@/core/platform";
 
 // @ts-ignore - react-dnd types issue
@@ -20,6 +21,7 @@ interface MediaCardProps {
 }
 
 export const MediaCard: React.FC<MediaCardProps> = ({ asset, isSelected, isUsedInTimeline, onClick, onContextMenu, onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const { previewAsset } = useUIStore();
 
   const [{ isDragging }, drag] = useDrag(() => ({
@@ -53,7 +55,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ asset, isSelected, isUsedI
         {/* "Added" badge */}
         {isUsedInTimeline && (
           <div className="absolute top-1 left-1 bg-purple-950/80 px-1 py-px rounded-[2px] text-[8px] text-white flex items-center gap-1">
-            <span>Added</span>
+            <span>{t("addedBadge")}</span>
           </div>
         )}
       </div>
@@ -66,7 +68,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ asset, isSelected, isUsedI
           e.stopPropagation();
           onAddToTimeline();
         }}
-        title="Add to Track"
+        title={t("addToTrack")}
         className="hidden cursor-pointer group-hover:flex bg-accent hover:bg-accent/90 w-5 h-5 rounded-full justify-center items-center absolute top-1 right-1 transition-colors"
       >
         <Plus size={14} className="text-white" />

@@ -87,7 +87,7 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
   return (
     <div className="space-y-2 select-none">
       <div className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">
-        Template Layers
+        {t("templateLayers")}
       </div>
 
       {sortedLayers.map((layer) => {
@@ -190,7 +190,7 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
                     </div>
 
                     <PropertySlider
-                      label="Font Size"
+                      label={t("fontSize")}
                       value={currentFontSize}
                       min={10}
                       max={1000}
@@ -205,15 +205,15 @@ export const TemplateLayerEditor: React.FC<TemplateLayerEditorProps> = ({
                         onChange={(e) => handleLayerFontPropertyChange(layer.id, "fontWeight", Number(e.target.value))}
                         className="w-full bg-zinc-900 border border-zinc-800 rounded-md py-1.5 px-2 text-xs text-white outline-none focus:border-sky-500"
                       >
-                        <option value={100}>Thin (100)</option>
-                        <option value={200}>Extra Light (200)</option>
-                        <option value={300}>Light (300)</option>
-                        <option value={400}>Regular (400)</option>
-                        <option value={500}>Medium (500)</option>
-                        <option value={600}>Semi Bold (600)</option>
-                        <option value={700}>Bold (700)</option>
-                        <option value={800}>Extra Bold (800)</option>
-                        <option value={900}>Black (900)</option>
+                        <option value={100}>{t("weightThin")} (100)</option>
+                        <option value={200}>{t("weightExtraLight")} (200)</option>
+                        <option value={300}>{t("weightLight")} (300)</option>
+                        <option value={400}>{t("weightRegular")} (400)</option>
+                        <option value={500}>{t("weightMedium")} (500)</option>
+                        <option value={600}>{t("weightSemiBold")} (600)</option>
+                        <option value={700}>{t("weightBold")} (700)</option>
+                        <option value={800}>{t("weightExtraBold")} (800)</option>
+                        <option value={900}>{t("weightBlack")} (900)</option>
                       </select>
                     </div>
                   </>

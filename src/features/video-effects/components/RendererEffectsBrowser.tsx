@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Download, Plus, Loader2, Smile, Star } from "lucide-react";
 import { VideoEffectsApi } from "../api/videoEffectsApi";
 import { type EffectMetadata } from "@clypra-studio/engine";
@@ -20,6 +21,7 @@ interface RendererEffectsBrowserProps {
 }
 
 export function RendererEffectsBrowser({ onEffectSelect, onAddToTimeline, showApplyButton = true, selectedCategory = "essentials" }: RendererEffectsBrowserProps) {
+  const { t } = useTranslation("editor");
   const [effects, setEffects] = useState<EffectMetadata[]>([]);
   const [loading, setLoading] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
@@ -136,13 +138,13 @@ export function RendererEffectsBrowser({ onEffectSelect, onAddToTimeline, showAp
         {loading ? (
           <div className="flex items-center justify-center gap-2 py-10 text-xs text-text-muted">
             <Loader2 className="h-4 w-4 animate-spin" />
-            Loading effects...
+            {t("loadingEffects")}
           </div>
         ) : filteredEffects.length === 0 ? (
           <div className="rounded-lg border border-border bg-surface-raised/40 p-4 text-center">
             <Smile className="mx-auto mb-2 h-5 w-5 text-text-muted" />
-            <p className="text-xs font-semibold text-text-primary">No effects found</p>
-            <p className="mt-1 text-[11px] leading-relaxed text-text-muted">Try a different search or category</p>
+            <p className="text-xs font-semibold text-text-primary">{t("noEffectsFound")}</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-text-muted">{t("tryAnotherSearch")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-1.5">
@@ -186,6 +188,7 @@ interface EffectCardProps {
 }
 
 function EffectCard({ effect, previewUrl, isFavorite, isDownloaded, isDownloading, onFavorite, onDownloadPreview, onApply, showApplyButton }: EffectCardProps) {
+  const { t } = useTranslation("editor");
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -207,7 +210,7 @@ function EffectCard({ effect, previewUrl, isFavorite, isDownloaded, isDownloadin
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
           <div className="flex flex-col items-center gap-2">
             <div className="w-8 h-8 rounded-full border-3 border-accent border-t-transparent animate-spin" />
-            <span className="text-[10px] font-semibold text-accent">Downloading...</span>
+            <span className="text-[10px] font-semibold text-accent">{t("downloading")}</span>
           </div>
         </div>
       )}
@@ -236,7 +239,7 @@ function EffectCard({ effect, previewUrl, isFavorite, isDownloaded, isDownloadin
                 onDownloadPreview();
               }}
               className="p-1.5 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 text-white transition-colors"
-              title="Download animated preview"
+              title={t("downloadAnimatedPreview")}
             >
               <Download size={12} />
             </button>

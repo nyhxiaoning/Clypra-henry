@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Search, Sparkles, AlertCircle, Star, Download, Plus } from "lucide-react";
 import type { EffectPreset } from "../types";
 import { VideoEffectsApi } from "../api/videoEffectsApi";
@@ -9,6 +10,7 @@ interface EffectPickerProps {
 }
 
 export function EffectPicker({ onSelect }: EffectPickerProps) {
+  const { t } = useTranslation("editor");
   const [selectedCategory, setSelectedCategory] = useState<string>("trending"); // Default to "autrendingra" since that's where the default effects are
   const [searchQuery, setSearchQuery] = useState("");
   const [effects, setEffects] = useState<EffectPreset[]>([]);
@@ -28,7 +30,7 @@ export function EffectPicker({ onSelect }: EffectPickerProps) {
       const bodyEffects = await VideoEffectsApi.getBodyEffects();
       setEffects(bodyEffects);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load body effects";
+      const message = err instanceof Error ? err.message : t("failedToLoadBodyEffects");
       setError(message);
       console.error("Failed to load body effects:", err);
     } finally {
@@ -80,7 +82,7 @@ export function EffectPicker({ onSelect }: EffectPickerProps) {
       <div className="p-1 border-b border-border shrink-0">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-          <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search body effects..." className="w-full bg-surface-raised border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent" />
+          <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("searchBodyEffects")} className="w-full bg-surface-raised border border-border rounded-lg pl-9 pr-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent" />
         </div>
       </div>
 
@@ -101,8 +103,8 @@ export function EffectPicker({ onSelect }: EffectPickerProps) {
 
         {!loading && !error && filteredEffects.length === 0 && (
           <div className="flex flex-col items-center justify-center h-40 gap-1 text-xs text-text-muted">
-            <p>No matching effects found</p>
-            <p className="opacity-60">Try another search or category</p>
+            <p>{t("noMatchingEffects")}</p>
+            <p className="opacity-60">{t("tryAnotherSearch")}</p>
           </div>
         )}
 
@@ -142,6 +144,7 @@ interface EffectCardProps {
 }
 
 function EffectCard({ effect, isFavorite, isDownloaded, isDownloading, onFavorite, onApply }: EffectCardProps) {
+  const { t } = useTranslation("editor");
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -151,7 +154,7 @@ function EffectCard({ effect, isFavorite, isDownloaded, isDownloading, onFavorit
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center z-20 pointer-events-none">
           <div className="flex flex-col items-center gap-2">
             <div className="w-8 h-8 rounded-full border-3 border-accent border-t-transparent animate-spin" />
-            <span className="text-[10px] font-semibold text-accent">Downloading...</span>
+            <span className="text-[10px] font-semibold text-accent">{t("downloading")}</span>
           </div>
         </div>
       )}

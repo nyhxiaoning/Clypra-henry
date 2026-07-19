@@ -52,32 +52,32 @@ const GOOGLE_FONTS = [
   { value: "Pacifico", label: "Pacifico" },
 ];
 
-const COLOR_PALETTE = [
-  { label: "White", value: "#ffffff" },
-  { label: "Black", value: "#1a1a1a" },
-  { label: "Yellow", value: "#ffcc00" },
-  { label: "Red", value: "#ff3b30" },
-  { label: "Pink", value: "#ff2d55" },
-  { label: "Purple", value: "#af52de" },
-  { label: "Blue", value: "#007aff" },
-  { label: "Teal", value: "#00f0ff" },
-  { label: "Green", value: "#34c759" },
-  { label: "Gold", value: "#ffe066, #b38600" },
-  { label: "Sunset", value: "#ff3e00, #ff0077, #aa00ff" },
-  { label: "Ocean", value: "#00c8ff, #00ff66" },
-  { label: "Rainbow", value: "#ff007f, #aa00ff, #00c8ff, #00ff66" },
+const COLOR_PALETTE_ITEMS = [
+  { labelKey: "colorWhite", value: "#ffffff" },
+  { labelKey: "colorBlack", value: "#1a1a1a" },
+  { labelKey: "colorYellow", value: "#ffcc00" },
+  { labelKey: "colorRed", value: "#ff3b30" },
+  { labelKey: "colorPink", value: "#ff2d55" },
+  { labelKey: "colorPurple", value: "#af52de" },
+  { labelKey: "colorBlue", value: "#007aff" },
+  { labelKey: "colorTeal", value: "#00f0ff" },
+  { labelKey: "colorGreen", value: "#34c759" },
+  { labelKey: "colorGold", value: "#ffe066, #b38600" },
+  { labelKey: "colorSunset", value: "#ff3e00, #ff0077, #aa00ff" },
+  { labelKey: "colorOcean", value: "#00c8ff, #00ff66" },
+  { labelKey: "colorRainbow", value: "#ff007f, #aa00ff, #00c8ff, #00ff66" },
 ];
 
-const FONT_WEIGHTS = [
-  { value: 100, label: "Thin" },
-  { value: 200, label: "Extra Light" },
-  { value: 300, label: "Light" },
-  { value: 400, label: "Regular" },
-  { value: 500, label: "Medium" },
-  { value: 600, label: "Semi Bold" },
-  { value: 700, label: "Bold" },
-  { value: 800, label: "Extra Bold" },
-  { value: 900, label: "Black" },
+const FONT_WEIGHT_ITEMS = [
+  { value: 100, labelKey: "weightThin" },
+  { value: 200, labelKey: "weightExtraLight" },
+  { value: 300, labelKey: "weightLight" },
+  { value: 400, labelKey: "weightRegular" },
+  { value: 500, labelKey: "weightMedium" },
+  { value: 600, labelKey: "weightSemiBold" },
+  { value: 700, labelKey: "weightBold" },
+  { value: 800, labelKey: "weightExtraBold" },
+  { value: 900, labelKey: "weightBlack" },
 ];
 
 const TEMPLATE_CATEGORIES = ["lower-third", "title-card", "caption", "callout", "social", "countdown"] as const;
@@ -265,7 +265,8 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
   // Resolve current font weight to a numeric value for the slider
   const effectiveFontWeight = textClip.fontWeight ?? effectFont?.weight;
   const currentWeight = typeof effectiveFontWeight === "number" ? effectiveFontWeight : effectiveFontWeight === "bold" ? 700 : 400;
-  const weightLabel = FONT_WEIGHTS.find((w) => w.value === currentWeight)?.label || "Regular";
+  const weightLabelKey = FONT_WEIGHT_ITEMS.find((w) => w.value === currentWeight)?.labelKey || "weightRegular";
+  const weightLabel = t(weightLabelKey);
   const effectiveFontStyle = textClip.fontStyle || effectFont?.style || "normal";
   const effectiveLetterSpacing = textClip.letterSpacing ?? effectFont?.letterSpacing ?? 0;
   const effectiveLineHeight = textClip.lineHeight ?? effectFont?.lineHeight ?? 1.2;
@@ -330,9 +331,9 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
           {templateDef ? (
             <>
               <div className="flex items-center justify-between mb-1 select-none">
-                <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">Active Template: {templateDef.label || templateDef.name}</span>
+                <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">{t("activeTemplate", { name: templateDef.label || templateDef.name })}</span>
                 <button onClick={handleDetachTemplate} className="text-[9px] font-semibold text-red-400 hover:text-red-300 transition-colors">
-                  Detach Template
+                  {t("detachTemplate")}
                 </button>
               </div>
               <TemplateLayerEditor
@@ -351,8 +352,8 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
             </>
           ) : (
             <div className="text-center py-4 select-none">
-              <p className="text-xs text-text-muted mb-2">No template active.</p>
-              <p className="text-[10px] text-zinc-500">Select a template from the gallery below to apply it.</p>
+              <p className="text-xs text-text-muted mb-2">{t("noTemplateActive")}</p>
+              <p className="text-[10px] text-zinc-500">{t("selectTemplateFromGallery")}</p>
             </div>
           )}
         </div>
@@ -614,12 +615,12 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
 
               {/* Quick Color Palette */}
               <div className="flex flex-wrap gap-1.5 pt-1 justify-start">
-                {COLOR_PALETTE.map((p, idx) => {
+                {COLOR_PALETTE_ITEMS.map((p, idx) => {
                   const isGrad = p.value.includes(",");
                   const style: React.CSSProperties = isGrad ? { background: `linear-gradient(135deg, ${p.value})` } : { backgroundColor: p.value };
                   const isSelected = textClip.color === p.value;
 
-                  return <button key={idx} onClick={() => handleCustomStyleUpdate("color", p.value)} className={`w-6 h-6 rounded-full border cursor-pointer hover:scale-110 active:scale-95 transition-all focus:outline-none ${isSelected ? "border-accent ring-2 ring-accent/30 scale-105" : "border-border/60 hover:border-text-primary"}`} style={style} title={p.label} />;
+                  return <button key={idx} onClick={() => handleCustomStyleUpdate("color", p.value)} className={`w-6 h-6 rounded-full border cursor-pointer hover:scale-110 active:scale-95 transition-all focus:outline-none ${isSelected ? "border-accent ring-2 ring-accent/30 scale-105" : "border-border/60 hover:border-text-primary"}`} style={style} title={t(p.labelKey)} />;
                 })}
               </div>
             </div>
@@ -776,11 +777,17 @@ export const TextStyleSection: React.FC<TextStyleSectionProps> = ({ textClip, pr
           <div className="space-y-3 select-none">
             {/* Category selection */}
             <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-none">
-              {TEMPLATE_CATEGORIES.map((cat) => (
-                <button key={cat} onClick={() => setTemplateCategory(cat)} className={`px-2 py-1 rounded text-[10px] capitalize font-medium transition-all shrink-0 ${templateCategory === cat ? "bg-amber-600/20 text-amber-400 border border-amber-500/30" : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200"}`}>
-                  {cat.replace("-", " ")}
-                </button>
-              ))}
+              {TEMPLATE_CATEGORIES.map((cat) => {
+                const pascal = cat
+                  .split("-")
+                  .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                  .join("");
+                return (
+                  <button key={cat} onClick={() => setTemplateCategory(cat)} className={`px-2 py-1 rounded text-[10px] capitalize font-medium transition-all shrink-0 ${templateCategory === cat ? "bg-amber-600/20 text-amber-400 border border-amber-500/30" : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200"}`}>
+                    {t("catTemplate" + pascal)}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Search filter */}

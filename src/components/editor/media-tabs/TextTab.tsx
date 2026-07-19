@@ -49,8 +49,8 @@ const generateContextualCaptions = (nameStr: string, pathStr: string, isAudio: b
   return ["Welcome back everyone! In this segment, we're going to explore some really interesting concepts.", "As you can see on the screen, this is exactly how it works in real-world environments.", "I've been working on this design for a few weeks now and the results are absolutely amazing.", "Let's go step-by-step through the layout so we can understand each component clearly.", "If you have any questions about this process, make sure to drop a comment below.", "Now, let's transition to the next phase of the implementation."];
 };
 
-// Categories list - derived from TEMPLATE_CATEGORIES
-const templateCategories = TEMPLATE_CATEGORIES.map((cat) =>
+// Categories list - derived from TEMPLATE_CATEGORIES (kept as English display strings so the filter logic remains valid regardless of locale)
+const templateCategoryDisplayNames = TEMPLATE_CATEGORIES.map((cat) =>
   cat
     .replace("-", " ")
     .split(" ")
@@ -58,8 +58,22 @@ const templateCategories = TEMPLATE_CATEGORIES.map((cat) =>
     .join(" "),
 );
 
+const TEMPLATE_CATEGORY_KEY_MAP: Record<string, string> = {
+  "lower-third": "catTemplateLowerThird",
+  "title-card": "catTemplateTitleCard",
+  caption: "catTemplateCaption",
+  callout: "catTemplateCallout",
+  social: "catTemplateSocial",
+  countdown: "catTemplateCountdown",
+};
+
 export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
   const { t } = useTranslation("editor");
+  const templateCategories = TEMPLATE_CATEGORIES.map((catId, i) => ({
+    id: catId,
+    displayEn: templateCategoryDisplayNames[i],
+    label: t(TEMPLATE_CATEGORY_KEY_MAP[catId] || catId),
+  }));
   const [activeTab, setActiveTab] = useState<"effects" | "templates" | "yours" | "captions">("effects");
   const [activeCategory, setActiveCategory] = useState<string>("Lower Third");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -119,7 +133,7 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         targetTrackId = timeline.insertTrackAt("text", insertIndex);
         // Rename target track
         useTimelineStore.setState((state) => ({
-          tracks: state.tracks.map((t) => (t.id === targetTrackId ? { ...t, name: "Auto Captions" } : t)),
+          tracks: state.tracks.map((tr) => (tr.id === targetTrackId ? { ...tr, name: t("autoCaptions") } : tr)),
         }));
       }
 
@@ -265,7 +279,7 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
       // Fallback gracefully with error UI
       setCaptioningState("idle");
       setCaptioningProgress(0);
-      alert(`Local transcription failed: ${err.message || err}. Running in fallback contextual simulator...`);
+      alert(t("localTranscriptionFailed", { message: err.message || err }));
     }
   };
 
@@ -487,23 +501,23 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
       {/* ── Top Header Control Navigation Row (Overflows X) ────────────── */}
       <div className="flex items-center gap-2.5 p-1 border-b border-border/50 shrink-0 bg-surface/10">
         <Button variant="ghost" size="sm" className="shrink-0 flex items-center justify-center gap-1 h-min px-2 py-0.5 cursor-pointer bg-accent/10 rounded-sm transition-all text-[12px] text-accent-soft hover:bg-accent/20 border border-accent/20" onClick={() => onAddToTimeline?.({ name: "Text" }, "text")}>
-          Add Text
+          {t("addText")}
         </Button>
 
         <div className="w-px h-5 bg-border/80 shrink-0" />
 
         <div className="grow overflow-x-auto flex items-center gap-2 pb-0.5 whitespace-nowrap" style={{ scrollbarWidth: "none" }}>
           <button onClick={() => handleTabChange("effects")} className={`px-2 py-0.5 rounded-sm text-xs font-semibold transition-all cursor-pointer ${activeTab === "effects" ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-surface-raised/40"}`}>
-            Text Effects
+            {t("textEffects")}
           </button>
           <button onClick={() => handleTabChange("templates")} className={`px-2 py-0.5 rounded-sm text-xs font-semibold transition-all cursor-pointer ${activeTab === "templates" ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-surface-raised/40"}`}>
-            Templates
+            {t("templates")}
           </button>
           <button onClick={() => handleTabChange("yours")} className={`px-2 py-0.5 rounded-sm text-xs font-semibold transition-all cursor-pointer ${activeTab === "yours" ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-surface-raised/40"}`}>
-            Favorites ({favorites.length})
+            {t("favorites")} ({favorites.length})
           </button>
           <button onClick={() => handleTabChange("captions")} className={`px-2 py-0.5 rounded-sm text-xs font-semibold transition-all cursor-pointer ${activeTab === "captions" ? "bg-accent text-white" : "text-text-muted hover:text-text-primary hover:bg-surface-raised/40"}`}>
-            Captions
+            {t("captions")}
           </button>
         </div>
       </div>
@@ -514,9 +528,9 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
           {/* Yours/Favorites Display */}
           {activeTab === "yours" && (
             <div>
-              <h4 className="text-xs font-semibold text-text-muted mb-2.5 uppercase tracking-wide">Favorite Templates ({favoriteTemplatesList.length})</h4>
+              <h4 className="text-xs font-semibold text-text-muted mb-2.5 uppercase tracking-wide">{t("favoriteTemplates", { count: favoriteTemplatesList.length })}</h4>
               {favoriteTemplatesList.length === 0 ? (
-                <p className="text-xs text-text-muted/60 italic py-2 pl-1">No favorite templates saved.</p>
+                <p className="text-xs text-text-muted/60 italic py-2 pl-1">{t("noFavoriteTemplates")}</p>
               ) : (
                 <div className="grid grid-cols-3 gap-1.5">
                   {favoriteTemplatesList.map((template) => (
@@ -537,8 +551,8 @@ export const TextTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
               <div className="relative shrink-0 border-b border-border/40 bg-surface/5">
                 <div className="flex overflow-x-auto gap-2 p-1 whitespace-nowrap" style={{ scrollbarWidth: "none" }}>
                   {templateCategories.map((cat) => (
-                    <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-2 py-1 text-[11px] font-medium rounded transition-colors cursor-pointer hover:bg-accent/10 hover:text-accent ${activeCategory === cat ? "bg-accent/10 text-accent" : "text-text-muted"}`}>
-                      {cat}
+                    <button key={cat.id} onClick={() => setActiveCategory(cat.displayEn)} className={`px-2 py-1 text-[11px] font-medium rounded transition-colors cursor-pointer hover:bg-accent/10 hover:text-accent ${activeCategory === cat.displayEn ? "bg-accent/10 text-accent" : "text-text-muted"}`}>
+                      {cat.label}
                     </button>
                   ))}
                 </div>

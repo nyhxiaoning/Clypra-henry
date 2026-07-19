@@ -36,7 +36,7 @@ export const StickersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
       })
       .catch((err: unknown) => {
         if (!cancelled) {
-          const errorMessage = err instanceof Error ? err.message : "Failed to load stickers";
+          const errorMessage = err instanceof Error ? err.message : t("failedToLoadStickers");
           setError(errorMessage);
           // Detect network errors
           const isNetwork = errorMessage.toLowerCase().includes("network") || errorMessage.toLowerCase().includes("fetch") || errorMessage.toLowerCase().includes("connection") || errorMessage.toLowerCase().includes("offline");
@@ -71,25 +71,40 @@ export const StickersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
 
   // Format category name for display
   const formatCategoryName = (category: string) => {
-    // Special formatting for specific categories
-    const specialFormats: Record<string, string> = {
-      y2k: "Y2K",
-      "free-fire": "Free Fire 🔥",
-      football: "Football⚽",
-      new: "NEW",
-      letters: "LETTERS",
-      sfx: "SFX",
-      ui: "UI",
+    // Special formatting for specific categories (map to i18n keys)
+    const specialKeys: Record<string, string> = {
+      y2k: "catStickerY2K",
+      "free-fire": "catStickerFreeFire",
+      football: "catStickerFootball",
+      new: "catStickerNew",
+      letters: "catStickerLetters",
+      sfx: "catStickerSfx",
+      ui: "catStickerUI",
     };
 
-    if (specialFormats[category]) {
-      return specialFormats[category];
+    if (specialKeys[category]) {
+      const label = t(specialKeys[category]);
+      // Preserve emojis for specific categories
+      if (category === "free-fire") return `${label} 🔥`;
+      if (category === "football") return `${label}⚽`;
+      return label;
     }
 
-    return category
+    // For fallback categories, title-case the id and try i18n
+    const titleCased = category
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+      .join("");
+    const key = `catSticker${titleCased}`;
+    const translated = t(key);
+    // If translation not found (returns the key itself), fall back to title-cased with spaces
+    if (translated === key) {
+      return category
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    }
+    return translated;
   };
 
   return (
@@ -108,11 +123,11 @@ export const StickersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         {loading && (
           <div className="flex items-center justify-center gap-2 py-10 text-xs text-text-muted">
             <Loader2 className="h-4 w-4 animate-spin" />
-            Loading stickers...
+            {t("loadingStickers")}
           </div>
         )}
 
-        {!loading && error && isNetworkError && <NetworkError message="No internet connection." onRetry={fetchStickers} />}
+        {!loading && error && isNetworkError && <NetworkError message={t("noInternetConnection")} onRetry={fetchStickers} />}
 
         {!loading && error && !isNetworkError && (
           <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-300 flex items-start gap-2">
@@ -143,6 +158,7 @@ export const StickersTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
 
 // StickerCard Component - Lottie-only with .webm preview on hover
 const StickerCard: React.FC<{ sticker: StickerItem; onAddToTimeline?: (item: any, type: any) => void }> = ({ sticker, onAddToTimeline }) => {
+  const { t } = useTranslation("editor");
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [lottieData, setLottieData] = useState<any>(null);
@@ -187,7 +203,7 @@ const StickerCard: React.FC<{ sticker: StickerItem; onAddToTimeline?: (item: any
 
       const mediaAsset: MediaAsset = {
         id: `sticker-${sticker.id}`,
-        name: sticker.name || "Sticker",
+        name: sticker.name || t("sticker"),
         path: absoluteImagePath,
         type: "image",
         duration: 3.0,
@@ -258,7 +274,7 @@ const StickerCard: React.FC<{ sticker: StickerItem; onAddToTimeline?: (item: any
       {/* Footer - name + apply button, always visible like TemplateCard */}
       <div className="flex items-center justify-between w-full mt-0.5 z-10">
         <span className="text-[9px] text-text-muted font-medium group-hover:text-text-primary transition-colors truncate max-w-[65px]">{sticker.name}</span>
-        <button onClick={handleAddToTimeline} disabled={isDownloading} title={isDownloadedFlag ? "Add sticker to timeline" : "Download sticker"} aria-label={isDownloadedFlag ? "Add sticker to timeline" : "Download sticker"} className={`w-4 h-4 rounded-full flex items-center justify-center transition-all relative ${isDownloadedFlag ? "bg-accent hover:bg-accent/85 border border-accent text-white cursor-pointer" : isDownloading ? "bg-accent/20 border border-accent cursor-wait" : "bg-surface/40 hover:bg-surface/60 border border-border/50 text-text-muted hover:text-text-primary cursor-pointer"}`}>
+        <button onClick={handleAddToTimeline} disabled={isDownloading} title={isDownloadedFlag ? t("addStickerToTimeline") : t("downloadSticker")} aria-label={isDownloadedFlag ? t("addStickerToTimeline") : t("downloadSticker")} className={`w-4 h-4 rounded-full flex items-center justify-center transition-all relative ${isDownloadedFlag ? "bg-accent hover:bg-accent/85 border border-accent text-white cursor-pointer" : isDownloading ? "bg-accent/20 border border-accent cursor-wait" : "bg-surface/40 hover:bg-surface/60 border border-border/50 text-text-muted hover:text-text-primary cursor-pointer"}`}>
           {isDownloading ? <div className="w-2 h-2 rounded-full border-2 border-accent border-t-transparent animate-spin" /> : isDownloadedFlag ? <Plus className="w-3 h-3 group-hover:scale-110 transition-transform" /> : <Download className="w-2 h-2 group-hover:scale-115 transition-transform" />}
         </button>
       </div>

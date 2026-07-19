@@ -93,8 +93,8 @@ export const TextAnimationControls: React.FC<TextAnimationControlsProps> = ({ cl
     [clip.exitAnimation, handleUpdate],
   );
 
-  const entranceOptions = ENTRANCE_PRESETS.map((p) => ({ value: p.type, label: p.name }));
-  const exitOptions = EXIT_PRESETS.map((p) => ({ value: p.type, label: p.name }));
+  const entranceOptions = ENTRANCE_PRESETS.map((p) => ({ value: p.type, label: t("anim" + p.name.replace(/\s/g, "")) }));
+  const exitOptions = EXIT_PRESETS.map((p) => ({ value: p.type, label: t("anim" + p.name.replace(/\s/g, "")) }));
 
   return (
     <PropertySection title={t("textAnimations")} icon={<Sparkles className="w-3.5 h-3.5" />}>

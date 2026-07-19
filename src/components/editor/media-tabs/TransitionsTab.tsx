@@ -17,20 +17,21 @@ import { getPlaybackClock } from "@/hooks/usePlaybackClock";
 
 // Hardcoded transition categories for instant UI rendering
 // Matches GPU transition categories from Transition Lab Console
-const TRANSITION_CATEGORIES = [
-  { id: "geometric", label: "Geometric" },
-  { id: "optical-distortion", label: "Optical Distortion" },
-  { id: "temporal", label: "Temporal" },
-  { id: "particle-dissolve", label: "Particle Dissolve" },
-  { id: "light-based", label: "Light Based" },
-  { id: "depth-based", label: "Depth Based" },
-  { id: "physics-simulated", label: "Physics Simulated" },
-] as const;
+const TRANSITION_CATEGORY_IDS = ["geometric", "optical-distortion", "temporal", "particle-dissolve", "light-based", "depth-based", "physics-simulated"] as const;
 
-type TransitionCategory = (typeof TRANSITION_CATEGORIES)[number]["id"];
+type TransitionCategory = (typeof TRANSITION_CATEGORY_IDS)[number];
 
 export const TransitionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
   const { t } = useTranslation("editor");
+  const TRANSITION_CATEGORIES: { id: TransitionCategory; label: string }[] = [
+    { id: "geometric", label: t("catTransitionGeometric") },
+    { id: "optical-distortion", label: t("catTransitionOpticalDistortion") },
+    { id: "temporal", label: t("catTransitionTemporal") },
+    { id: "particle-dissolve", label: t("catTransitionParticleDissolve") },
+    { id: "light-based", label: t("catTransitionLightBased") },
+    { id: "depth-based", label: t("catTransitionDepthBased") },
+    { id: "physics-simulated", label: t("catTransitionPhysicsSimulated") },
+  ];
   const [activeCategory, setActiveCategory] = useState<TransitionCategory>("geometric");
   const [transitions, setTransitions] = useState<TransitionAsset[]>([]);
   const [loading, setLoading] = useState(false);
@@ -52,7 +53,7 @@ export const TransitionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         setTransitions(data);
       } catch (err) {
         console.error(`[TransitionsTab] Failed to load category ${activeCategory}:`, err);
-        setError(err instanceof Error ? err.message : "Failed to load transitions");
+        setError(err instanceof Error ? err.message : t("failedToLoadTransitions"));
       } finally {
         setLoading(false);
       }
@@ -230,7 +231,7 @@ const TransitionCard: React.FC<{ transition: TransitionAsset; onAddToTimeline: (
       <Tooltip>
         <TooltipTrigger asChild>{cardContent}</TooltipTrigger>
         <TooltipContent side="top" className="text-xs">
-          Select two adjacent clips or place playhead at a cut
+          {t("selectTwoAdjacentClips")}
         </TooltipContent>
       </Tooltip>
     );

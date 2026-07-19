@@ -47,7 +47,7 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
 
     // Rename to standard Auto Captions track name
     useTimelineStore.setState((state) => ({
-      tracks: state.tracks.map((t) => (t.id === targetTrackId ? { ...t, name: "Auto Captions" } : t)),
+      tracks: state.tracks.map((tr) => (tr.id === targetTrackId ? { ...tr, name: t("autoCaptions") } : tr)),
     }));
 
     return targetTrackId;
@@ -69,7 +69,7 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
       const blocks = parseSubtitles(text);
 
       if (blocks.length === 0) {
-        throw new Error("No subtitle blocks found. Please ensure the file is valid SRT or WebVTT.");
+        throw new Error(t("noSubtitleBlocks"));
       }
 
       const trackId = ensureCaptionTrackId();
@@ -96,7 +96,7 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         });
       });
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed to parse subtitle file.");
+      setErrorMsg(err.message || t("failedToParseSubtitle"));
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
@@ -138,7 +138,7 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
       trackId,
       startTime: playheadTime,
       duration: 2.0,
-      text: "New Caption Text",
+      text: t("newCaptionText"),
       canvasWidth,
       canvasHeight,
       fontSize: 32,
@@ -164,7 +164,7 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
     const modelState = captionSettings.models[model];
     if (modelState.status !== "downloaded") {
       console.error(`[CaptionsTab] Model "${model}" status is: ${modelState.status}`);
-      setErrorMsg(`Whisper model "${model}" is not downloaded yet. Please go to Settings → Captions to download the model first.`);
+      setErrorMsg(t("whisperModelNotDownloaded", { model }));
       // Open settings modal to help user
       toggleSettingsModal();
       return;
@@ -178,13 +178,13 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
 
       if (!exists) {
         console.error(`[CaptionsTab] Model "${model}" marked as downloaded but files not found on disk`);
-        setErrorMsg(`Model files for "${model}" not found on disk. The model may have been deleted or corrupted. Please re-download the model from Settings → Captions.`);
+        setErrorMsg(t("modelFilesNotFound", { model }));
         toggleSettingsModal();
         return;
       }
     } catch (error) {
       console.error(`[CaptionsTab] Failed to verify model:`, error);
-      setErrorMsg(`Failed to verify model files: ${error}. Please check Settings → Captions.`);
+      setErrorMsg(t("failedToVerifyModelFiles", { error: String(error) }));
       toggleSettingsModal();
       return;
     }
@@ -197,14 +197,14 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
 
     if (mediaClips.length === 0) {
       console.warn(`[CaptionsTab] No media clips found on timeline`);
-      setErrorMsg("No video or audio clips found on the timeline. Add media first.");
+      setErrorMsg(t("noAudioVideoClipsMobile"));
       return;
     }
 
     console.log(`[CaptionsTab] Found ${mediaClips.length} media clips to process`);
 
     if (platform.isCapacitor()) {
-      setErrorMsg("Local auto-captions are only supported on Clypra Desktop.");
+      setErrorMsg(t("desktopOnly"));
       return;
     }
 
@@ -260,7 +260,7 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
 
           if (result.error) {
             console.error(`Failed to transcribe ${mediaClip.id}:`, result.error);
-            setErrorMsg(`Transcription error: ${result.error}`);
+            setErrorMsg(t("transcriptionError", { error: result.error }));
             continue;
           }
 
@@ -313,7 +313,7 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
         } catch (clipError: any) {
           console.error(`[CaptionsTab] Error processing clip ${mediaClip.id}:`, clipError);
           console.error(`[CaptionsTab] Error stack:`, clipError.stack);
-          setErrorMsg(`Error: ${clipError.message || clipError}`);
+          setErrorMsg(t("error", { message: clipError.message || clipError }));
         }
       }
 
@@ -444,11 +444,11 @@ export const CaptionsTab: React.FC<TabProps> = ({ onAddToTimeline }) => {
                 {/* Micro Timing controls */}
                 <div className="grid grid-cols-2 gap-2 text-[10px]">
                   <div className="flex items-center gap-1.5">
-                    <span className="shrink-0 text-text-muted">Start:</span>
+                    <span className="shrink-0 text-text-muted">{t("start")}</span>
                     <input type="number" step="0.1" value={Number(clip.startTime.toFixed(2))} onChange={(e) => handleTimingChange(clip.id, "startTime", parseFloat(e.target.value) || 0)} className="w-full px-1.5 py-1 bg-background/30 border border-border/30 rounded text-center outline-none focus:border-accent text-text-primary" />
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="shrink-0 text-text-muted">Duration:</span>
+                    <span className="shrink-0 text-text-muted">{t("durationLabel")}</span>
                     <input type="number" step="0.1" min="0.1" value={Number(clip.duration.toFixed(2))} onChange={(e) => handleTimingChange(clip.id, "duration", parseFloat(e.target.value) || 0.1)} className="w-full px-1.5 py-1 bg-background/30 border border-border/30 rounded text-center outline-none focus:border-accent text-text-primary" />
                   </div>
                 </div>
