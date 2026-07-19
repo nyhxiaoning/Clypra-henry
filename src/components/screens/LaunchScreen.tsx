@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Film, Image as ImageIcon, Plus, Trash2, Pencil, MoreHorizontal, Clock, ChevronRight, Sparkles, Settings, Activity, Video } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -23,7 +24,6 @@ const toPreviewSrc = (value?: string) => {
   return value;
 };
 
-
 const graphemeSegmenter = new Intl.Segmenter("en", { granularity: "grapheme" });
 const countGraphemes = (str: string): number => Array.from(graphemeSegmenter.segment(str)).length;
 
@@ -40,11 +40,12 @@ const getProjectThumbnail = (project: Project) => {
 const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
 export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onProjectOpen }) => {
+  const { t } = useTranslation("launch");
   const { recentProjects, setRecentProjects, deleteProject, renameProject } = useProjectStore();
-  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [projectTot("common.delete", { defaultValue: "Delete" }), setProjectTot("common.delete", { defaultValue: "Delete" })] = useState<Project | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [projectToRename, setProjectToRename] = useState<Project | null>(null);
-  const [renameValue, setRenameValue] = useState("");
+  const [projectTot("common.rename", { defaultValue: "Rename" }), setProjectTot("common.rename", { defaultValue: "Rename" })] = useState<Project | null>(null);
+  const [renameValue, sett("common.rename", { defaultValue: "Rename" })Value] = useState("");
   const [isRenaming, setIsRenaming] = useState(false);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
@@ -126,7 +127,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
 
     if (previewVideoRef.current) previewVideoRef.current.srcObject = null;
     if (previewScreenVideoRef.current) previewScreenVideoRef.current.srcObject = null;
-    
+
     // Stop any existing sessions/previews to prevent multi-access conflicts
     DualRecordService.getInstance().stopPreview();
     DualRecordService.getInstance().stopScreenPreview();
@@ -305,28 +306,28 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
 
   const handleStartNewProject = () => {
     const { defaultFrameRate } = useSettingsStore.getState();
-    onProjectCreate("Untitled Project", "16:9", defaultFrameRate);
+    onProjectCreate(t("untitledProject"), "16:9", defaultFrameRate);
   };
 
-  const handleDeleteClick = (e: React.MouseEvent, project: Project) => {
+  const handlet("common.delete", { defaultValue: "Delete" })Click = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
     setMenuOpen(null);
-    setProjectToDelete(project);
+    setProjectTot("common.delete", { defaultValue: "Delete" })(project);
   };
 
-  const handleRenameClick = (e: React.MouseEvent, project: Project) => {
+  const handlet("common.rename", { defaultValue: "Rename" })Click = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
     setMenuOpen(null);
-    setProjectToRename(project);
-    setRenameValue(project.name);
+    setProjectTot("common.rename", { defaultValue: "Rename" })(project);
+    sett("common.rename", { defaultValue: "Rename" })Value(project.name);
   };
 
-  const handleConfirmRename = async () => {
-    if (!projectToRename || !renameValue.trim()) return;
+  const handleConfirmt("common.rename", { defaultValue: "Rename" }) = async () => {
+    if (!projectTot("common.rename", { defaultValue: "Rename" }) || !renameValue.trim()) return;
     setIsRenaming(true);
     try {
-      await renameProject(projectToRename.id, renameValue.trim());
-      setProjectToRename(null);
+      await renameProject(projectTot("common.rename", { defaultValue: "Rename" }).id, renameValue.trim());
+      setProjectTot("common.rename", { defaultValue: "Rename" })(null);
     } catch (error) {
       console.error("Failed to rename project:", error);
     } finally {
@@ -351,12 +352,12 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
-  const handleConfirmDelete = async () => {
-    if (!projectToDelete) return;
+  const handleConfirmt("common.delete", { defaultValue: "Delete" }) = async () => {
+    if (!projectTot("common.delete", { defaultValue: "Delete" })) return;
     setIsDeleting(true);
     try {
-      await deleteProject(projectToDelete.id);
-      setProjectToDelete(null);
+      await deleteProject(projectTot("common.delete", { defaultValue: "Delete" }).id);
+      setProjectTot("common.delete", { defaultValue: "Delete" })(null);
     } catch (error) {
       console.error("Failed to delete project:", error);
     } finally {
@@ -379,14 +380,15 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
   };
 
   const formatDate = (dateStr: string | number) => {
+    const locale = t("locale");
     const date = new Date(dateStr);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    if (diffDays === 0) return t("today");
+    if (diffDays === 1) return t("yesterday");
+    if (diffDays < 7) return t("daysAgo", { count: diffDays });
+    return date.toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
   };
 
 
@@ -422,7 +424,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon-sm" onClick={() => setShowDiagnosticsModal(true)} title="Performance Diagnostics" style={{ WebkitAppRegion: "no-drag", cursor: "pointer" } as React.CSSProperties} className={diagnosticsEnabled.performance || diagnosticsEnabled.projectLoad || diagnosticsEnabled.textRender || diagnosticsEnabled.timelinePerf || diagnosticsEnabled.textTemplate ? "text-accent" : ""}>
+            <Button variant="ghost" size="icon-sm" onClick={() => setShowDiagnosticsModal(true)} title="t("launch.performanceDiagnostics")" style={{ WebkitAppRegion: "no-drag", cursor: "pointer" } as React.CSSProperties} className={diagnosticsEnabled.performance || diagnosticsEnabled.projectLoad || diagnosticsEnabled.textRender || diagnosticsEnabled.timelinePerf || diagnosticsEnabled.textTemplate ? "text-accent" : ""}>
               <Activity className="w-3.5 h-3.5" />
             </Button>
 
@@ -453,14 +455,14 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
             <div className="relative z-10">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 text-accent text-[11px] font-semibold mb-4">
                 <Sparkles className="w-3 h-3" />
-                Create something amazing
+                {t("createSomethingAmazing")}
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2 tracking-tight">Start a new project</h2>
-              <p className="text-sm text-text-muted mb-6 max-w-md">Begin with a 16:9 landscape canvas, or capture your screen and face simultaneously.</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2 tracking-tight">{t("title")}</h2>
+              <p className="text-sm text-text-muted mb-6 max-w-md">{t("subtitle")}</p>
               <div className="flex flex-col sm:flex-row items-center gap-3">
                 <Button variant="default" size="lg" onClick={handleStartNewProject} className="py-2 px-4 text-base font-semibold rounded-xl transition-all cursor-pointer">
                   <Plus className="mr-1" />
-                  New Project
+                  {t("newProject")}
                 </Button>
                 {!platform.isCapacitor() && (
                   <Button
@@ -470,7 +472,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                     className="py-2 px-4 text-base font-semibold rounded-xl transition-all cursor-pointer border border-red-500/40 text-red-400 hover:bg-red-500/10 hover:border-red-500/70 hover:text-red-300"
                   >
                     <Video className="mr-1.5 w-4 h-4" />
-                    Record Screen & Camera
+                    {t("recordScreenCamera")}
                   </Button>
                 )}
               </div>
@@ -482,14 +484,14 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
         <section className="flex-1">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="w-4 h-4 text-text-muted" />
-            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider">Recent Projects</h3>
+            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wider">{t("recentProjects")}</h3>
           </div>
 
           {recentProjects.length === 0 ? (
             <div className="rounded-xl border border-dashed border-white/6 p-10 flex flex-col items-center justify-center text-center">
               <Film className="w-10 h-10 text-text-muted/30 mb-3" />
-              <p className="text-sm text-text-muted">No recent projects</p>
-              <p className="text-xs text-text-muted/60 mt-1">Create a new project to get started</p>
+              <p className="text-sm text-text-muted">{t("noRecentProjects")}</p>
+              <p className="text-xs text-text-muted/60 mt-1">{t("noRecentProjectsHint")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -546,13 +548,13 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                       {/* Dropdown menu */}
                       {menuOpen === project.id && (
                         <div ref={menuRef} className="absolute top-full right-0 mt-1 z-50 min-w-[140px] rounded-lg border border-border bg-surface py-1 shadow-xl overflow-hidden">
-                          <button onClick={(e) => handleRenameClick(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-text-primary hover:bg-surface-raised transition-colors cursor-pointer">
+                          <button onClick={(e) => handlet("common.rename", { defaultValue: "Rename" })Click(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-text-primary hover:bg-surface-raised transition-colors cursor-pointer">
                             <Pencil className="w-3.5 h-3.5" />
-                            Rename
+                            t("common.rename", { defaultValue: "Rename" })
                           </button>
-                          <button onClick={(e) => handleDeleteClick(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-danger hover:bg-surface-raised transition-colors cursor-pointer">
+                          <button onClick={(e) => handlet("common.delete", { defaultValue: "Delete" })Click(e, project)} className="w-full px-3 py-2 text-left flex items-center gap-2 text-sm text-danger hover:bg-surface-raised transition-colors cursor-pointer">
                             <Trash2 className="w-3.5 h-3.5" />
-                            Delete
+                            t("common.delete", { defaultValue: "Delete" })
                           </button>
                         </div>
                       )}
@@ -565,20 +567,20 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
         </section>
       </div>
 
-      {/* Rename Modal */}
-      <Modal isOpen={!!projectToRename} onClose={() => setProjectToRename(null)} title="Rename Project">
+      {/* t("common.rename", { defaultValue: "Rename" }) Modal */}
+      <Modal isOpen={!!projectTot("common.rename", { defaultValue: "Rename" })} onClose={() => setProjectTot("common.rename", { defaultValue: "Rename" })(null)} title={t("common.renameProject", { defaultValue: "t("common.renameProject", { defaultValue: "t("common.rename", { defaultValue: "Rename" }) Project" })" })}>
         <div className="p-5 space-y-4">
           <div>
             <input
               type="text"
               value={renameValue}
-              onChange={(e) => setRenameValue(e.target.value)}
+              onChange={(e) => sett("common.rename", { defaultValue: "Rename" })Value(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") handleConfirmRename();
+                if (e.key === "Enter") handleConfirmt("common.rename", { defaultValue: "Rename" })();
               }}
               autoFocus
               className="w-full px-3 py-2 rounded-lg bg-bg border border-border text-sm text-text-primary focus:outline-none focus:border-accent transition-colors"
-              placeholder="Project name"
+              placeholder={t("common.projectName", { defaultValue: "t("common.projectName", { defaultValue: "Project name" })" })}
             />
             <div className="flex justify-end mt-1">
               <span className={`text-[10px] font-medium ${countGraphemes(renameValue) > MAX_PROJECT_NAME_LENGTH ? "text-danger" : "text-text-muted/60"}`}>
@@ -587,47 +589,47 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
             </div>
           </div>
           <div className="flex gap-3 justify-end pt-2">
-            <Button variant="ghost" onClick={() => setProjectToRename(null)} disabled={isRenaming}>
-              Cancel
+            <Button variant="ghost" onClick={() => setProjectTot("common.rename", { defaultValue: "Rename" })(null)} disabled={isRenaming}>
+              {t("common.cancel")}
             </Button>
-            <Button variant="default" onClick={handleConfirmRename} disabled={isRenaming || !renameValue.trim() || countGraphemes(renameValue) > MAX_PROJECT_NAME_LENGTH}>
-              {isRenaming ? "Renaming..." : "Rename"}
+            <Button variant="default" onClick={handleConfirmt("common.rename", { defaultValue: "Rename" })} disabled={isRenaming || !renameValue.trim() || countGraphemes(renameValue) > MAX_PROJECT_NAME_LENGTH}>
+              {isRenaming ? t("common.renaming", { defaultValue: "t("common.renaming", { defaultValue: "Renaming..." })" }) : t("common.rename", { defaultValue: "t("common.rename", { defaultValue: "Rename" })" })}
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
-      <Modal isOpen={!!projectToDelete} onClose={() => setProjectToDelete(null)} title="Delete Project">
+      {/* t("common.delete", { defaultValue: "Delete" }) Confirmation Modal */}
+      <Modal isOpen={!!projectTot("common.delete", { defaultValue: "Delete" })} onClose={() => setProjectTot("common.delete", { defaultValue: "Delete" })(null)} title={t("common.deleteProject", { defaultValue: "t("common.deleteProject", { defaultValue: "t("common.delete", { defaultValue: "Delete" }) Project" })" })}>
         <div className="p-5 space-y-4">
           <p className="text-sm text-text-primary">
-            Are you sure you want to delete <strong>{projectToDelete?.name}</strong>?
+            {t("common.deleteConfirm", { defaultValue: "t("common.deleteConfirm", { defaultValue: "Are you sure you want to delete {{name}}?", name: projectToDelete?.name }) {{name}}?", name: projectTot("common.delete", { defaultValue: "Delete" })?.name })}
           </p>
-          <p className="text-xs text-text-muted">This action cannot be undone. All project data will be permanently deleted.</p>
+          <p className="text-xs text-text-muted">{t("common.deleteWarning", { defaultValue: "t("common.deleteWarning", { defaultValue: "This action cannot be undone. All project data will be permanently deleted." })" })}</p>
 
           <div className="flex gap-3 justify-end pt-2">
-            <Button variant="secondary" className="cursor-pointer" onClick={() => setProjectToDelete(null)} disabled={isDeleting}>
-              Cancel
+            <Button variant="secondary" className="cursor-pointer" onClick={() => setProjectTot("common.delete", { defaultValue: "Delete" })(null)} disabled={isDeleting}>
+              {t("common.cancel")}
             </Button>
-            <Button variant="default" onClick={handleConfirmDelete} disabled={isDeleting} className="bg-danger hover:bg-danger/80 cursor-pointer">
-              {isDeleting ? "Deleting..." : "Delete"}
+            <Button variant="default" onClick={handleConfirmt("common.delete", { defaultValue: "Delete" })} disabled={isDeleting} className="bg-danger hover:bg-danger/80 cursor-pointer">
+              {isDeleting ? t("common.deleting", { defaultValue: "t("common.deleting", { defaultValue: "Deleting..." })" }) : t("common.delete", { defaultValue: "t("common.delete", { defaultValue: "Delete" })" })}
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Performance Diagnostics Modal */}
-      <Modal isOpen={showDiagnosticsModal} onClose={() => setShowDiagnosticsModal(false)} title="Performance Diagnostics">
+      {/* t("launch.performanceDiagnostics") Modal */}
+      <Modal isOpen={showDiagnosticsModal} onClose={() => setShowDiagnosticsModal(false)} title={t("launch.performanceDiagnostics")}>
         <div className="p-5 space-y-5">
           <div className="space-y-4">
             <div className="flex items-start gap-3 p-3 rounded-lg bg-surface border border-border">
               <input type="checkbox" id="diag-performance" checked={diagnosticsEnabled.performance} onChange={() => toggleDiagnostic("performance")} className="mt-0.5 cursor-pointer" />
               <div className="flex-1">
                 <label htmlFor="diag-performance" className="text-sm font-semibold text-text-primary cursor-pointer block">
-                  Performance Monitoring
+                  {t("settings.performanceMonitoring")}
                 </label>
                 <p className="text-xs text-text-muted mt-1">
-                  Track frame rendering, timeline operations, and component performance. Use <code className="px-1 py-0.5 rounded bg-bg text-accent text-[10px]">__performanceMonitor.getSummary()</code> in console.
+                  {t("settings.performanceMonitoringHint", { defaultValue: "Track frame rendering, timeline operations, and component performance. Use __performanceMonitor.getSummary() in console." })}
                 </p>
               </div>
             </div>
@@ -636,9 +638,9 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
               <input type="checkbox" id="diag-projectload" checked={diagnosticsEnabled.projectLoad} onChange={() => toggleDiagnostic("projectLoad")} className="mt-0.5 cursor-pointer" />
               <div className="flex-1">
                 <label htmlFor="diag-projectload" className="text-sm font-semibold text-text-primary cursor-pointer block">
-                  Project Load Diagnostics
+                  {t("settings.projectLoadDiagnostics")}
                 </label>
-                <p className="text-xs text-text-muted mt-1">Detailed breakdown of project loading phases. Shows which parts take the longest to load.</p>
+                <p className="text-xs text-text-muted mt-1">{t("settings.projectLoadDiagnosticsHint", { defaultValue: "Detailed breakdown of project loading phases. Shows which parts take the longest to load." })}</p>
               </div>
             </div>
 
@@ -646,10 +648,10 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
               <input type="checkbox" id="diag-textrender" checked={diagnosticsEnabled.textRender} onChange={() => toggleDiagnostic("textRender")} className="mt-0.5 cursor-pointer" />
               <div className="flex-1">
                 <label htmlFor="diag-textrender" className="text-sm font-semibold text-text-primary cursor-pointer block">
-                  Text Render Tracing
+                  {t("settings.textRenderTracing")}
                 </label>
                 <p className="text-xs text-text-muted mt-1">
-                  Verbose logging for text rendering pipeline. Use <code className="px-1 py-0.5 rounded bg-bg text-accent text-[10px]">localStorage.setItem("clypra.debug.textRender", "1")</code>
+                  {t("settings.textRenderTracingHint", { defaultValue: "Verbose logging for text rendering pipeline. Use localStorage.setItem(\"clypra.debug.textRender\", \"1\")" })}
                 </p>
               </div>
             </div>
@@ -658,10 +660,10 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
               <input type="checkbox" id="diag-timelineperf" checked={diagnosticsEnabled.timelinePerf} onChange={() => toggleDiagnostic("timelinePerf")} className="mt-0.5 cursor-pointer" />
               <div className="flex-1">
                 <label htmlFor="diag-timelineperf" className="text-sm font-semibold text-accent cursor-pointer block">
-                  ⏱️ Timeline Performance (Focused)
+                  ⏱️ {t("settings.timelinePerformanceFocused")}
                 </label>
                 <p className="text-xs text-text-muted mt-1">
-                  Focused timeline operation logging. Tracks hydration, clip additions, and timeline mutations. Use <code className="px-1 py-0.5 rounded bg-bg text-accent text-[10px]">__timelinePerf.enable()</code> in console.
+                  {t("settings.timelinePerformanceFocusedHint", { defaultValue: "Focused timeline operation logging. Tracks hydration, clip additions, and timeline mutations. Use __timelinePerf.enable() in console." })}
                 </p>
               </div>
             </div>
@@ -670,10 +672,10 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
               <input type="checkbox" id="diag-texttemplate" checked={diagnosticsEnabled.textTemplate} onChange={() => toggleDiagnostic("textTemplate")} className="mt-0.5 cursor-pointer" />
               <div className="flex-1">
                 <label htmlFor="diag-texttemplate" className="text-sm font-semibold text-yellow-600 dark:text-yellow-400 cursor-pointer block">
-                  📐 Text Template Bounds (Debug)
+                  📐 {t("settings.textTemplateBoundsDebug")}
                 </label>
                 <p className="text-xs text-text-muted mt-1">
-                  Debug text template bounding box issues. Logs canvas size, content bounds, and clip dimensions. Use <code className="px-1 py-0.5 rounded bg-bg text-accent text-[10px]">__textTemplateDebug.enable()</code> in console.
+                  {t("settings.textTemplateBoundsDebugHint", { defaultValue: "Debug text template bounding box issues. Logs canvas size, content bounds, and clip dimensions. Use __textTemplateDebug.enable() in console." })}
                 </p>
               </div>
             </div>
@@ -681,14 +683,14 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
 
           <div className="p-3 rounded-lg bg-accent/10 border border-accent/20">
             <p className="text-xs text-text-muted leading-relaxed">
-              <strong className="text-accent font-semibold">Note:</strong> These diagnostics output to the browser console. Open DevTools (F12 or Cmd+Option+I) to view detailed performance metrics and traces.
-              {(diagnosticsEnabled.performance || diagnosticsEnabled.projectLoad || diagnosticsEnabled.textRender || diagnosticsEnabled.timelinePerf || diagnosticsEnabled.textTemplate) && " Refresh the page after toggling for changes to take effect."}
+              <strong className="text-accent font-semibold">{t("settings.note")}</strong> {t("settings.theseDiagnosticsOutputToConsole")}
+              {(diagnosticsEnabled.performance || diagnosticsEnabled.projectLoad || diagnosticsEnabled.textRender || diagnosticsEnabled.timelinePerf || diagnosticsEnabled.textTemplate) && " " + t("settings.refreshAfterToggle")}
             </p>
           </div>
 
           <div className="flex gap-3 justify-end pt-2">
             <Button variant="default" onClick={() => setShowDiagnosticsModal(false)}>
-              Done
+              {t("common.done")}
             </Button>
           </div>
         </div>
@@ -709,7 +711,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500/15 border border-red-500/30">
                   <Video className="w-4 h-4 text-red-400" />
                 </span>
-                Record Screen & Camera
+                t("recordScreenCamera")
               </h3>
               <button
                 onClick={closeRecordModal}
@@ -841,7 +843,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                   <span>Microphone Source</span>
                   {audioDevices.length > 0 && <span className="text-emerald-400 font-bold flex items-center gap-1.5 animate-pulse">● Live Testing</span>}
                 </div>
-                
+
                 {audioDevices.length > 0 ? (
                   <div className="flex flex-col gap-2.5">
                     <select
@@ -855,7 +857,7 @@ export const LaunchScreen: React.FC<LaunchScreenProps> = ({ onProjectCreate, onP
                         </option>
                       ))}
                     </select>
-                    
+
                     {/* Live Meter */}
                     <div className="flex items-center gap-3">
                       <span className="text-[11px] text-slate-400 font-medium">Input level:</span>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { LaunchScreen } from "@/components/screens/LaunchScreen";
 import { EditorScreen } from "@/components/screens/EditorScreen";
 import { TooltipProvider } from "@/components/ui/Tooltip";
@@ -23,6 +24,7 @@ import { UpdateBanner } from "@/components/ui/UpdateBanner";
 // const isExternalOrDataUrl = (value: string) => value.startsWith("data:") || value.startsWith("http") || value.startsWith("asset://");
 
 const App = () => {
+  const { i18n } = useTranslation("common");
   const { project, createProject, loadProject, setRecentProjects } = useProjectStore();
   const [isLoading, setIsLoading] = useState(true);
   const { showSettingsModal, toggleSettingsModal } = useUIStore();
@@ -41,6 +43,11 @@ const App = () => {
 
         const projects = await platform.getRecentProjects();
         setRecentProjects(projects);
+
+        const savedLanguage = localStorage.getItem("clypra-language");
+        if (savedLanguage && savedLanguage !== i18n.language) {
+          await i18n.changeLanguage(savedLanguage);
+        }
 
         // ── Crash recovery check ─────────────────────────────────────────
         // If the previous session was not closed cleanly (crash / browser refresh),

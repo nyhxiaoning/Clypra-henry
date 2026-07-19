@@ -1,0 +1,21 @@
+{
+  "backToHome": "返回首页",
+  "undo": "撤销",
+  "redo": "重做",
+  "exportVideo": "导出视频",
+  "settings": "设置",
+  "undoLabel": "撤销：{{label}}",
+  "redoLabel": "重做：{{label}}",
+  "swapSelectedClips": "交换选中片段",
+  "deleteLeftAtPlayhead": "删除播放头左侧",
+  "deleteRightAtPlayhead": "删除播放头右侧",
+  "splitAllAtPlayhead": "已拆分 {{count}} 个片段",
+  "deleteLeftApplied": "左侧删除已应用于 {{count}} 个片段",
+  "deleteRightApplied": "右侧删除已应用于 {{count}} 个片段",
+  "deletedClips": "已删除 {{count}} 个片段",
+  "duplicatedClips": "已复制 {{count}} 个片段",
+  "closedTimelineGaps": "已关闭时间线间隙",
+  "noClipsUnderPlayheadToSplit": "播放头下没有可拆分的片段",
+  "noClipsToDeleteLeftAtPlayhead": "播放头左侧没有可删除的片段",
+  "timelineZoom": "时间线缩放"
+}

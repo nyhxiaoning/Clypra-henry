@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { SupportedLanguage } from "@/i18n";
 
 export type Theme = "dark" | "midnight" | "ocean" | "forest" | "midnight-carbon" | "ember-studio" | "forest-console" | "slate-noir" | "rose-cut" | "custom";
 export type FontFamily = "inter" | "montserrat" | "geist" | "outfit" | "roboto" | "space-grotesk" | "system" | "mono";
@@ -11,10 +12,12 @@ interface SettingsStore {
   theme: Theme;
   fontFamily: FontFamily;
   customTheme: Record<string, string> | null;
+  language: SupportedLanguage;
   setTheme: (theme: Theme) => void;
   setFontFamily: (fontFamily: FontFamily) => void;
   setCustomTheme: (colors: Record<string, string>) => void;
   resetCustomTheme: () => void;
+  setLanguage: (language: SupportedLanguage) => void;
   // Editor
   snapToGrid: boolean;
   autoSave: boolean;
@@ -32,6 +35,7 @@ export const useSettingsStore = create<SettingsStore>()(
       theme: "dark",
       fontFamily: "inter",
       customTheme: null,
+      language: "en",
       snapToGrid: true,
       autoSave: true,
       defaultFrameRate: 30,
@@ -45,6 +49,10 @@ export const useSettingsStore = create<SettingsStore>()(
       setFontFamily: (fontFamily) => {
         set({ fontFamily });
         applyFontFamily(fontFamily);
+      },
+
+      setLanguage: (language) => {
+        set({ language });
       },
 
       setCustomTheme: (colors) => {

@@ -1,0 +1,21 @@
+{
+  "backToHome": "Back to Home",
+  "undo": "Undo",
+  "redo": "Redo",
+  "exportVideo": "Export Video",
+  "settings": "Settings",
+  "undoLabel": "Undo {{label}}",
+  "redoLabel": "Redo {{label}}",
+  "swapSelectedClips": "Swap selected clips",
+  "deleteLeftAtPlayhead": "Delete left at playhead",
+  "deleteRightAtPlayhead": "Delete right at playhead",
+  "splitAllAtPlayhead": "Split {{count}} clip",
+  "deleteLeftApplied": "Delete left applied to {{count}} clip",
+  "deleteRightApplied": "Delete right applied to {{count}} clip",
+  "deletedClips": "Deleted {{count}} clip",
+  "duplicatedClips": "Duplicated {{count}} clip",
+  "closedTimelineGaps": "Closed timeline gaps",
+  "noClipsUnderPlayheadToSplit": "No clips under playhead to split",
+  "noClipsToDeleteLeftAtPlayhead": "No clips to delete left at playhead",
+  "timelineZoom": "Timeline zoom"
+}

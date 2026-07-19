@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Check, Palette, SlidersHorizontal, Info, Paintbrush, RotateCcw, Copy, Download, Upload, HardDrive, Captions, RefreshCw, Keyboard } from "lucide-react";
 import { platform } from "@/core/platform";
 import { Modal } from "./Modal";
@@ -10,6 +11,7 @@ import { WhisperSettings } from "@/components/settings/WhisperSettings";
 import { KeyboardShortcutsSettings } from "@/components/settings/KeyboardShortcutsSettings";
 import { refitClipsForCanvasChange } from "@/lib/timeline/refitClips";
 import { checkAppUpdate, installAndRelaunchUpdate, isTauriDesktop } from "@/services/updaterService";
+import { changeLanguage, LANGUAGE_OPTIONS, type SupportedLanguage } from "@/i18n";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -19,12 +21,12 @@ interface SettingsModalProps {
 type Tab = "appearance" | "editor" | "shortcuts" | "captions" | "cache" | "about";
 
 const TABS: { id: Tab; label: string; icon: React.FC<{ className?: string }> }[] = [
-  { id: "appearance", label: "Appearance", icon: Palette },
-  { id: "editor", label: "Editor", icon: SlidersHorizontal },
-  { id: "shortcuts", label: "Shortcuts", icon: Keyboard },
-  { id: "captions", label: "Auto-Captions", icon: Captions },
-  { id: "cache", label: "Storage & Cache", icon: HardDrive },
-  { id: "about", label: "About", icon: Info },
+  { id: "appearance", label: "settings.appearance", icon: Palette },
+  { id: "editor", label: "settings.editor", icon: SlidersHorizontal },
+  { id: "shortcuts", label: "settings.shortcuts", icon: Keyboard },
+  { id: "captions", label: "settings.autoCaptions", icon: Captions },
+  { id: "cache", label: "settings.storageAndCache", icon: HardDrive },
+  { id: "about", label: "settings.about", icon: Info },
 ];
 
 // ─── Enhanced theme preview with timeline ────────────────────────────────
@@ -407,10 +409,10 @@ function EditorTab() {
       <section>
         <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">Timeline</h3>
         <div className="space-y-3">
-          <SettingRow label="Snap to grid" description="Clips snap to ruler ticks when dragging">
+          <SettingRow label={t("settings.snapToGrid")} description={t("settings.snapToGrid")}>
             <ToggleSwitch checked={snapToGrid} onChange={setSnapToGrid} />
           </SettingRow>
-          <SettingRow label="Magnetic snap" description="Snap clips to playhead and other clip edges">
+          <SettingRow label={t("settings.snapToGrid")} description={t("settings.snapToGrid")}>
             <ToggleSwitch checked={snapEnabled} onChange={toggleSnapEnabled} />
           </SettingRow>
         </div>
@@ -451,10 +453,10 @@ function EditorTab() {
       <section>
         <h3 className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">Defaults</h3>
         <div className="space-y-3">
-          <SettingRow label="Auto-save" description="Periodically save project state">
+          <SettingRow label={t("settings.autoSave")} description={t("settings.autoSave")}>
             <ToggleSwitch checked={autoSave} onChange={setAutoSave} />
           </SettingRow>
-          <SettingRow label="Default frame rate" description="Frame rate for new projects">
+          <SettingRow label={t("settings.defaultFrameRate")} description={t("settings.defaultFrameRate")}>
             <div className="flex rounded-lg overflow-hidden border border-white/6">
               {frameRates.map((fr) => (
                 <button key={fr.value} onClick={() => setDefaultFrameRate(fr.value)} className={`px-3 py-1 text-[11px] font-semibold transition-colors ${defaultFrameRate === fr.value ? "bg-accent text-white" : "bg-surface-raised text-text-muted hover:text-text-primary hover:bg-white/6"}`}>
@@ -701,7 +703,10 @@ function AboutTab() {
 
 // ─── Main Settings Modal ─────────────────────────────────────────────────
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation("settings");
   const [activeTab, setActiveTab] = useState<Tab>("appearance");
+  const language = useSettingsStore((state) => state.language);
+  const setLanguage = useSettingsStore((state) => state.setLanguage);
 
   const visibleTabs = TABS.filter((tab) => {
     if (platform.isCapacitor() && tab.id === "shortcuts") return false;
@@ -719,7 +724,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-1.5 px-2 py-1.5 text-nowrap cursor-pointer rounded-lg text-[13px] font-medium transition-colors ${isActive ? "text-accent bg-white/4" : "text-text-muted hover:text-text-primary hover:bg-white/4"}`}>
                 <Icon className="w-4 h-4 shrink-0" />
-                {tab.label}
+                {t(tab.label)}
               </button>
             );
           })}
@@ -741,6 +746,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               </div>
             ) : (
               <WhisperSettings />
+              <div className="mt-4">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-2">App language</p>
+                <select
+                  value={language}
+                  onChange={(event) => {
+                    const next = event.target.value as SupportedLanguage;
+                    setLanguage(next);
+                    changeLanguage(next);
+                  }}
+                  className="w-full rounded-lg border border-white/6 bg-surface-raised px-3 py-2 text-[12px] text-text-primary focus:outline-none focus:border-accent/40"
+                >
+                  {LANGUAGE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label[language] ?? option.label.en}
+                    </option>
+                  ))}
+                </select>
+              </div>
             )
           )}
           {activeTab === "cache" && <CacheSettings />}
